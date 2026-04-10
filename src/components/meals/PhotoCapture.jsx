@@ -22,16 +22,14 @@ export default function PhotoCapture({ apiKey, onResult }) {
   };
 
   const compressImage = (file) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new window.Image();
-      const url = URL.createObjectURL(file);
 
       img.onload = () => {
-        const MAX_SIZE = 1024;
-        let width = img.width;
-        let height = img.height;
+        const MAX_SIZE = 800;
+        let { width, height } = img;
 
         if (width > height && width > MAX_SIZE) {
           height = Math.round(height * MAX_SIZE / width);
@@ -45,11 +43,16 @@ export default function PhotoCapture({ apiKey, onResult }) {
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
 
-        const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
-        URL.revokeObjectURL(url);
+        const base64 = canvas.toDataURL('image/jpeg', 0.75).split(',')[1];
         resolve(base64);
       };
-      img.src = url;
+
+      img.onerror = reject;
+
+      const reader = new FileReader();
+      reader.onload = (e) => { img.src = e.target.result; };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
   };
 
