@@ -1,4 +1,4 @@
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
+﻿const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 const PROMPT = `이 음식 사진을 분석해서 다음 JSON 형식으로만 응답해줘 (다른 텍스트 없이):
 {
