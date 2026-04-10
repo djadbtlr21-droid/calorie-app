@@ -1,66 +1,105 @@
+const P = 4; // pixel size
+const S = '#FDBCB4'; // skin
+const H = '#4A3728'; // hair
+const U = '#4A90D9'; // underwear
+const W = '#3A78B8'; // waistband
+const E = '#2D2D2D'; // eyes
+const B = '#FF9999'; // blush
+const M = '#E06070'; // mouth
+const V = '#F0A8A0'; // belly
+
+function R({ x, y, c }) {
+  return <rect x={x * P} y={y * P} width={P} height={P} fill={c} />;
+}
+
 export default function Mascot({ size = 80, className = '' }) {
-  const h = size * 1.25;
-
   return (
-    <svg width={size} height={h} viewBox="0 0 80 100" className={className} style={{ flexShrink: 0 }}>
-      {/* Hair */}
-      <ellipse cx="40" cy="16" rx="16" ry="10" fill="#4A2C2A"/>
-      {/* Head */}
-      <circle cx="40" cy="24" r="14" fill="#FDBCB4"/>
-      {/* Hair top */}
-      <path d="M26 20 Q30 10 36 8 Q40 7 44 8 Q50 10 54 20 Q50 14 44 12 Q40 11 36 12 Q30 14 26 20Z" fill="#4A2C2A"/>
-      {/* Short messy hair spikes */}
-      <path d="M32 10 Q34 6 36 10" fill="#4A2C2A"/>
-      <path d="M38 8 Q40 4 42 8" fill="#4A2C2A"/>
-      <path d="M44 9 Q46 5 48 10" fill="#4A2C2A"/>
+    <svg
+      width={size}
+      height={size * (100 / 80)}
+      viewBox="0 0 80 100"
+      className={className}
+      style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated', flexShrink: 0 }}
+    >
+      {/* Hair row 0-1 */}
+      {[6,7,8,9,10,11,12,13].map(x => <R key={`h0-${x}`} x={x} y={0} c={H} />)}
+      {[5,6,7,8,9,10,11,12,13,14].map(x => <R key={`h1-${x}`} x={x} y={1} c={H} />)}
+      {/* Hair spikes */}
+      <R x={7} y={0} c={H} /><R x={8} y={0} c={H} />
 
-      {/* Eyes */}
-      <ellipse cx="34" cy="23" rx="2.5" ry="3" fill="#2D2D2D"/>
-      <ellipse cx="46" cy="23" rx="2.5" ry="3" fill="#2D2D2D"/>
-      <circle cx="35" cy="21.5" r="1" fill="white"/>
-      <circle cx="47" cy="21.5" r="1" fill="white"/>
+      {/* Hair sides + face row 2 */}
+      {[5,6].map(x => <R key={`hs2-${x}`} x={x} y={2} c={H} />)}
+      {[7,8,9,10,11,12].map(x => <R key={`f2-${x}`} x={x} y={2} c={S} />)}
+      {[13,14].map(x => <R key={`hs2b-${x}`} x={x} y={2} c={H} />)}
 
-      {/* Eyebrows - slightly worried */}
-      <path d="M30 18.5 Q33 17 37 19" stroke="#4A2C2A" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-      <path d="M43 19 Q47 17 50 18.5" stroke="#4A2C2A" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      {/* Face row 3 */}
+      {[5,6,7,8,9,10,11,12,13,14].map(x => <R key={`f3-${x}`} x={x} y={3} c={S} />)}
 
-      {/* Blush */}
-      <ellipse cx="30" cy="27" rx="3.5" ry="1.8" fill="#FFAAAA" opacity="0.45"/>
-      <ellipse cx="50" cy="27" rx="3.5" ry="1.8" fill="#FFAAAA" opacity="0.45"/>
+      {/* Eyes row 4 */}
+      <R x={5} y={4} c={S} /><R x={6} y={4} c={S} />
+      <R x={7} y={4} c={E} /><R x={8} y={4} c={S} /><R x={9} y={4} c={S} />
+      <R x={10} y={4} c={S} /><R x={11} y={4} c={S} />
+      <R x={12} y={4} c={E} /><R x={13} y={4} c={S} /><R x={14} y={4} c={S} />
 
-      {/* Embarrassed smile */}
-      <path d="M36 30 Q40 33 44 30" stroke="#D44" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      {/* Cheeks + mouth row 5 */}
+      <R x={5} y={5} c={B} /><R x={6} y={5} c={S} /><R x={7} y={5} c={S} />
+      <R x={8} y={5} c={S} /><R x={9} y={5} c={M} /><R x={10} y={5} c={M} />
+      <R x={11} y={5} c={S} /><R x={12} y={5} c={S} /><R x={13} y={5} c={S} />
+      <R x={14} y={5} c={B} />
 
-      {/* Neck */}
-      <rect x="37" y="37" width="6" height="4" rx="1.5" fill="#FDBCB4"/>
+      {/* Chin row 6 */}
+      {[7,8,9,10,11,12].map(x => <R key={`ch-${x}`} x={x} y={6} c={S} />)}
 
-      {/* Chubby body */}
-      <ellipse cx="40" cy="56" rx="22" ry="18" fill="#FDBCB4"/>
+      {/* Neck row 7 */}
+      <R x={9} y={7} c={S} /><R x={10} y={7} c={S} />
 
-      {/* Belly button */}
-      <ellipse cx="40" cy="56" rx="1.5" ry="2.2" fill="#E8A090"/>
+      {/* Shoulders row 8 */}
+      {[4,5,6,7,8,9,10,11,12,13,14,15].map(x => <R key={`sh-${x}`} x={x} y={8} c={S} />)}
 
-      {/* Belly curve line */}
-      <path d="M28 50 Q32 42 40 42 Q48 42 52 50" stroke="#E8A090" strokeWidth="0.8" fill="none" opacity="0.5"/>
+      {/* Arms + body row 9 */}
+      <R x={3} y={9} c={S} />
+      {[4,5,6,7,8,9,10,11,12,13,14,15].map(x => <R key={`b9-${x}`} x={x} y={9} c={S} />)}
+      <R x={16} y={9} c={S} />
 
-      {/* Arms */}
-      <path d="M18 48 Q12 52 10 60 Q9 64 13 63 Q16 61 18 56" fill="#FDBCB4"/>
-      <path d="M62 48 Q68 52 70 60 Q71 64 67 63 Q64 61 62 56" fill="#FDBCB4"/>
+      {/* Wide belly row 10 */}
+      <R x={3} y={10} c={S} />
+      {[4,5,6,7,8].map(x => <R key={`b10a-${x}`} x={x} y={10} c={S} />)}
+      <R x={9} y={10} c={V} /><R x={10} y={10} c={V} />
+      {[11,12,13,14,15].map(x => <R key={`b10b-${x}`} x={x} y={10} c={S} />)}
+      <R x={16} y={10} c={S} />
 
-      {/* Blue underwear/boxers */}
-      <path d="M22 66 Q26 60 40 60 Q54 60 58 66 L56 78 Q48 80 40 80 Q32 80 24 78 Z" fill="#4A90D9"/>
-      {/* Waistband */}
-      <path d="M22 66 Q26 63 40 63 Q54 63 58 66" stroke="#3A78B8" strokeWidth="2" fill="none"/>
-      {/* Underwear center line */}
-      <line x1="40" y1="68" x2="40" y2="80" stroke="#3A78B8" strokeWidth="0.8" opacity="0.4"/>
+      {/* Belly row 11 */}
+      {[4,5,6,7,8].map(x => <R key={`b11a-${x}`} x={x} y={11} c={S} />)}
+      <R x={9} y={11} c={V} /><R x={10} y={11} c={V} />
+      {[11,12,13,14,15].map(x => <R key={`b11b-${x}`} x={x} y={11} c={S} />)}
 
-      {/* Legs */}
-      <path d="M28 78 L26 92 Q30 94 34 92 L36 78" fill="#FDBCB4"/>
-      <path d="M44 78 L42 92 Q46 94 50 92 L52 78" fill="#FDBCB4"/>
+      {/* Lower belly row 12 */}
+      {[5,6,7,8,9,10,11,12,13,14].map(x => <R key={`b12-${x}`} x={x} y={12} c={S} />)}
 
-      {/* Feet */}
-      <ellipse cx="30" cy="93" rx="6" ry="3" fill="#FDBCB4"/>
-      <ellipse cx="48" cy="93" rx="6" ry="3" fill="#FDBCB4"/>
+      {/* Underwear waistband row 13 */}
+      {[5,6,7,8,9,10,11,12,13,14].map(x => <R key={`wb-${x}`} x={x} y={13} c={W} />)}
+
+      {/* Underwear rows 14-16 */}
+      {[5,6,7,8,9,10,11,12,13,14].map(x => <R key={`u14-${x}`} x={x} y={14} c={U} />)}
+      {[5,6,7,8,9,10,11,12,13,14].map(x => <R key={`u15-${x}`} x={x} y={15} c={U} />)}
+      {[5,6,7,8].map(x => <R key={`u16a-${x}`} x={x} y={16} c={U} />)}
+      {[11,12,13,14].map(x => <R key={`u16b-${x}`} x={x} y={16} c={U} />)}
+
+      {/* Legs rows 17-19 */}
+      {[5,6,7,8].map(x => <R key={`l17a-${x}`} x={x} y={17} c={S} />)}
+      {[11,12,13,14].map(x => <R key={`l17b-${x}`} x={x} y={17} c={S} />)}
+      {[5,6,7].map(x => <R key={`l18a-${x}`} x={x} y={18} c={S} />)}
+      {[12,13,14].map(x => <R key={`l18b-${x}`} x={x} y={18} c={S} />)}
+      {[5,6,7].map(x => <R key={`l19a-${x}`} x={x} y={19} c={S} />)}
+      {[12,13,14].map(x => <R key={`l19b-${x}`} x={x} y={19} c={S} />)}
+
+      {/* Feet row 20 */}
+      {[4,5,6,7,8].map(x => <R key={`f20a-${x}`} x={x} y={20} c={S} />)}
+      {[11,12,13,14,15].map(x => <R key={`f20b-${x}`} x={x} y={20} c={S} />)}
+
+      {/* Sweat drop */}
+      <R x={15} y={3} c="#7EC8E3" />
+      <R x={15} y={4} c="#7EC8E3" />
     </svg>
   );
 }
