@@ -1,25 +1,12 @@
-﻿const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
 
-const PROMPT = `이 음식 사진을 분석해서 다음 JSON 형식으로만 응답해줘 (다른 텍스트 없이):
-{
-  "foods": [
-    {
-      "name": "음식명",
-      "amount": "양(g 또는 개수)",
-      "calories": 숫자,
-      "protein": 숫자,
-      "carbs": 숫자,
-      "fat": 숫자
-    }
-  ],
-  "totalCalories": 숫자,
-  "confidence": "높음/중간/낮음"
-}`;
+const PROMPT = `Analyze this food image and respond with ONLY a JSON object, no other text:
+{"foods":[{"name":"food name in Korean","amount":"portion size","calories":number,"protein":number,"carbs":number,"fat":number}],"totalCalories":number,"confidence":"높음"}`;
 
 export async function analyzeFoodImage(imageBase64, apiKey, userDescription = '') {
   console.log('API Key exists:', !!apiKey, 'Length:', apiKey?.length);
 
-  const descriptionHint = userDescription ? `\n\n사용자 힌트: "${userDescription}" - 이 정보를 참고해서 더 정확하게 분석해줘.` : '';
+  const descriptionHint = userDescription ? `\nUser hint: "${userDescription}" - use this to improve accuracy.` : '';
   const fullPrompt = PROMPT + descriptionHint;
 
   const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
@@ -51,11 +38,12 @@ export async function analyzeFoodImage(imageBase64, apiKey, userDescription = ''
   }
 
   const data = await response.json();
+  console.log('Full API response:', JSON.stringify(data));
+
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  console.log('Gemini raw response:', text);
 
   if (!text) throw new Error('분석 실패');
-
-  console.log('Raw Gemini response:', text);
 
   // Try multiple parsing strategies
   let result = null;
