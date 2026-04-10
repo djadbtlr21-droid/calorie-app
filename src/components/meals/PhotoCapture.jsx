@@ -22,40 +22,34 @@ export default function PhotoCapture({ apiKey, onResult }) {
     setError('');
   };
 
-  const compressImage = (file) => {
+  async function compressAndConvertImage(file) {
     return new Promise((resolve, reject) => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new window.Image();
-
-      img.onload = () => {
-        const MAX_SIZE = 800;
-        let { width, height } = img;
-
-        if (width > height && width > MAX_SIZE) {
-          height = Math.round(height * MAX_SIZE / width);
-          width = MAX_SIZE;
-        } else if (height > MAX_SIZE) {
-          width = Math.round(width * MAX_SIZE / height);
-          height = MAX_SIZE;
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-
-        const base64 = canvas.toDataURL('image/jpeg', 0.75).split(',')[1];
-        resolve(base64);
-      };
-
-      img.onerror = reject;
-
       const reader = new FileReader();
-      reader.onload = (e) => { img.src = e.target.result; };
+      reader.onload = (e) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_SIZE = 800;
+          let { width, height } = img;
+          if (width > height && width > MAX_SIZE) {
+            height = Math.round(height * MAX_SIZE / width);
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width = Math.round(width * MAX_SIZE / height);
+            height = MAX_SIZE;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.75).split(',')[1]);
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-  };
+  }
 
   const handleAnalyze = async () => {
     if (!imageFile) return;
@@ -63,7 +57,8 @@ export default function PhotoCapture({ apiKey, onResult }) {
     setError('');
     setLoading(true);
     try {
-      const base64 = await compressImage(imageFile);
+      const base64 = await compressAndConvertImage(imageFile);
+      console.log('Compressed size KB:', Math.round(base64.length * 0.75 / 1024));
       setDebugInfo(`이미지 크기: ${Math.round(base64.length * 0.75 / 1024)}KB | type: image/jpeg`);
       const result = await analyzeFoodImage(base64, apiKey, description, 'image/jpeg');
       onResult(result);
