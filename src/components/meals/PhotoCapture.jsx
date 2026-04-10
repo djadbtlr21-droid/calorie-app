@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Camera, Image, Loader2 } from 'lucide-react';
-import { analyzeFoodImage, imageToBase64 } from '../../services/gemini';
+import { analyzeFoodImage } from '../../services/gemini';
 import { useLang } from '../../contexts/LanguageContext';
 import Trainer from '../characters/Trainer';
 
@@ -21,14 +21,46 @@ export default function PhotoCapture({ apiKey, onResult }) {
     setError('');
   };
 
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new window.Image();
+      const url = URL.createObjectURL(file);
+
+      img.onload = () => {
+        const MAX_SIZE = 1024;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height && width > MAX_SIZE) {
+          height = Math.round(height * MAX_SIZE / width);
+          width = MAX_SIZE;
+        } else if (height > MAX_SIZE) {
+          width = Math.round(width * MAX_SIZE / height);
+          height = MAX_SIZE;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+        URL.revokeObjectURL(url);
+        resolve(base64);
+      };
+      img.src = url;
+    });
+  };
+
   const handleAnalyze = async () => {
     if (!imageFile) return;
     if (!apiKey) { setError(t.noApiKey); return; }
     setError('');
     setLoading(true);
     try {
-      const base64 = await imageToBase64(imageFile);
-      const result = await analyzeFoodImage(base64, apiKey, description);
+      const base64 = await compressImage(imageFile);
+      const result = await analyzeFoodImage(base64, apiKey, description, 'image/jpeg');
       onResult(result);
       setDescription('');
       setPreview(null);

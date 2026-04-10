@@ -3,7 +3,7 @@
 const PROMPT = `Analyze this food image and respond with ONLY a JSON object, no other text:
 {"foods":[{"name":"food name in Korean","amount":"portion size","calories":number,"protein":number,"carbs":number,"fat":number}],"totalCalories":number,"confidence":"높음"}`;
 
-export async function analyzeFoodImage(imageBase64, apiKey, userDescription = '') {
+export async function analyzeFoodImage(imageBase64, apiKey, userDescription = '', mimeType = 'image/jpeg') {
   console.log('API Key exists:', !!apiKey, 'Length:', apiKey?.length);
 
   const descriptionHint = userDescription ? `\nUser hint: "${userDescription}" - use this to improve accuracy.` : '';
@@ -16,7 +16,7 @@ export async function analyzeFoodImage(imageBase64, apiKey, userDescription = ''
       contents: [{
         parts: [
           { text: fullPrompt },
-          { inline_data: { mime_type: 'image/jpeg', data: imageBase64 } }
+          { inline_data: { mime_type: mimeType, data: imageBase64 } }
         ]
       }],
       generationConfig: {
