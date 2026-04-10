@@ -1,4 +1,4 @@
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
+﻿const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
 
 const PROMPT = `Analyze this food image and respond with ONLY a JSON object, no other text:
 {"foods":[{"name":"food name in Korean","amount":"portion size","calories":number,"protein":number,"carbs":number,"fat":number}],"totalCalories":number,"confidence":"높음"}`;
@@ -21,7 +21,7 @@ export async function analyzeFoodImage(imageBase64, apiKey, userDescription = ''
       }],
       generationConfig: {
         temperature: 0.1,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 4096,
       }
     })
   });
