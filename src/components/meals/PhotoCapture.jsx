@@ -10,6 +10,7 @@ export default function PhotoCapture({ apiKey, onResult }) {
   const [preview, setPreview] = useState(null);
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
+  const [debugInfo, setDebugInfo] = useState('');
   const cameraRef = useRef(null);
   const galleryRef = useRef(null);
   const { t } = useLang();
@@ -63,13 +64,15 @@ export default function PhotoCapture({ apiKey, onResult }) {
     setLoading(true);
     try {
       const base64 = await compressImage(imageFile);
+      setDebugInfo(`이미지 크기: ${Math.round(base64.length * 0.75 / 1024)}KB | type: image/jpeg`);
       const result = await analyzeFoodImage(base64, apiKey, description, 'image/jpeg');
       onResult(result);
       setDescription('');
       setPreview(null);
       setImageFile(null);
+      setDebugInfo('');
     } catch (err) {
-      setError(err.message);
+      setError(`[DEBUG] ${err.message} | ${err.stack?.split('\n')[0] || ''}`);
     } finally {
       setLoading(false);
     }
@@ -107,6 +110,7 @@ export default function PhotoCapture({ apiKey, onResult }) {
               className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-primary text-slate-700 dark:text-slate-200"
             />
             <p className="text-[10px] text-slate-400 mt-1">AI 인식이 어려운 경우 힌트를 입력하면 더 정확해져요!</p>
+          {debugInfo && <p className="text-xs text-blue-500 mt-1">{debugInfo}</p>}
           </div>
 
           <button
