@@ -19,10 +19,7 @@ export async function analyzeFoodImage(imageBase64, apiKey, userDescription = ''
           { inline_data: { mime_type: 'image/jpeg', data: imageBase64 } }
         ]
       }],
-      generationConfig: {
-        temperature: 0.1,
-        maxOutputTokens: 4096,
-      }
+      generationConfig: { temperature: 0.1, maxOutputTokens: 8192 }
     })
   });
 
