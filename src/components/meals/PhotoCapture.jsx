@@ -53,7 +53,10 @@ export default function PhotoCapture({ apiKey, onResult }) {
 
   const handleAnalyze = async () => {
     if (!imageFile) return;
-    if (!apiKey) { setError(t.noApiKey); return; }
+    if (!apiKey || apiKey.trim().length < 39) {
+      setError(`프로필 탭에서 Gemini API 키를 먼저 입력해주세요! 🔑 (현재 ${apiKey?.trim().length || 0}자 / 39자 필요)`);
+      return;
+    }
     setError('');
     setLoading(true);
     try {
