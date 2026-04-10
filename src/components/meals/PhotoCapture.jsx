@@ -59,8 +59,9 @@ export default function PhotoCapture({ apiKey, onResult }) {
     try {
       const base64 = await compressAndConvertImage(imageFile);
       console.log('Compressed size KB:', Math.round(base64.length * 0.75 / 1024));
-      setDebugInfo(`이미지 크기: ${Math.round(base64.length * 0.75 / 1024)}KB | type: image/jpeg`);
-      const result = await analyzeFoodImage(base64, apiKey, description, 'image/jpeg');
+      const trimmedKey = apiKey?.trim();
+      setDebugInfo(`이미지: ${Math.round(base64.length * 0.75 / 1024)}KB | 키길이: ${trimmedKey?.length} | 키앞4자: ${trimmedKey?.substring(0,4)}`);
+      const result = await analyzeFoodImage(base64, trimmedKey, description, 'image/jpeg');
       onResult(result);
       setDescription('');
       setPreview(null);

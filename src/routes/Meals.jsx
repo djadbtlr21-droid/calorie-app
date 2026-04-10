@@ -34,7 +34,7 @@ export default function Meals() {
           <MealEntryForm initialFood={selectedFood} onSave={handleSave} onCancel={() => setSelectedFood(null)} />
         ) : (
           <>
-            {mode === 'photo' && <PhotoCapture apiKey={profile?.geminiApiKey} onResult={handlePhotoResult} />}
+            {mode === 'photo' && <PhotoCapture apiKey={profile?.geminiApiKey?.trim()} onResult={handlePhotoResult} />}
             {mode === 'manual' && <FoodSearch onSelect={(f) => { setSelectedFood(f); setGeminiResult(null); }} />}
             {geminiResult?.foods?.length > 1 && (
               <div className="space-y-2">

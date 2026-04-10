@@ -4,12 +4,13 @@ const PROMPT = `Analyze this food image and respond with ONLY a JSON object, no 
 {"foods":[{"name":"food name in Korean","amount":"portion size","calories":number,"protein":number,"carbs":number,"fat":number}],"totalCalories":number,"confidence":"높음"}`;
 
 export async function analyzeFoodImage(imageBase64, apiKey, userDescription = '', mimeType = 'image/jpeg') {
-  console.log('API Key exists:', !!apiKey, 'Length:', apiKey?.length);
+  const cleanKey = apiKey?.trim();
+  console.log('API Key exists:', !!cleanKey, 'Length:', cleanKey?.length, 'First4:', cleanKey?.substring(0,4));
 
   const descriptionHint = userDescription ? `\nUser hint: "${userDescription}" - use this to improve accuracy.` : '';
   const fullPrompt = PROMPT + descriptionHint;
 
-  const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+  const response = await fetch(`${GEMINI_URL}?key=${cleanKey}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -32,12 +33,7 @@ export async function analyzeFoodImage(imageBase64, apiKey, userDescription = ''
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     console.error('Gemini API error details:', errorData);
-    const status = response.status;
-    if (status === 400) throw new Error('API 요청이 잘못되었습니다.');
-    if (status === 403) throw new Error('API 키가 유효하지 않습니다.');
-    if (status === 404) throw new Error('API 모델을 찾을 수 없어요. 잠시 후 다시 시도해주세요.');
-    if (status === 429) throw new Error('API 요청 한도 초과. 잠시 후 다시 시도해주세요.');
-    throw new Error(`Gemini API error: ${status}`);
+    throw new Error(`${response.status}: ${JSON.stringify(errorData?.error?.message || errorData)}`);
   }
 
   const data = await response.json();
