@@ -1,4 +1,4 @@
-﻿const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+﻿const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
 
 const PROMPT = `이 음식 사진을 분석해서 다음 JSON 형식으로만 응답해줘 (다른 텍스트 없이):
 {
@@ -53,31 +53,51 @@ export async function analyzeFoodImage(imageBase64, apiKey, userDescription = ''
   const data = await response.json();
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-  if (!text) {
-    throw new Error('분석 실패');
+  if (!text) throw new Error('분석 실패');
+
+  console.log('Raw Gemini response:', text);
+
+  // Try multiple parsing strategies
+  let result = null;
+
+  // Strategy 1: Direct parse
+  try { result = JSON.parse(text.trim()); } catch (e) {}
+
+  // Strategy 2: Remove markdown code blocks
+  if (!result) {
+    try {
+      const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      result = JSON.parse(cleaned);
+    } catch (e) {}
   }
 
-  let cleanText = text
-    .replace(/```json\n?/g, '')
-    .replace(/```\n?/g, '')
-    .trim();
+  // Strategy 3: Extract JSON object
+  if (!result) {
+    try {
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) result = JSON.parse(match[0]);
+    } catch (e) {}
+  }
 
-  try {
-    return JSON.parse(cleanText);
-  } catch (e) {
-    const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      try {
-        return JSON.parse(jsonMatch[0]);
-      } catch (e2) {
-        const fixed = jsonMatch[0]
-          .replace(/,\s*}/g, '}')
-          .replace(/,\s*]/g, ']');
-        return JSON.parse(fixed);
+  // Strategy 4: Fix common issues and retry
+  if (!result) {
+    try {
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) {
+        const fixed = match[0]
+          .replace(/,(\s*[}\]])/g, '$1')
+          .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
+        result = JSON.parse(fixed);
       }
-    }
+    } catch (e) {}
+  }
+
+  if (!result) {
+    console.error('All parsing strategies failed. Raw text:', text);
     throw new Error('응답 처리 실패');
   }
+
+  return result;
 }
 
 export function imageToBase64(file) {
