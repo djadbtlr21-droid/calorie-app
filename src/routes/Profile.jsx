@@ -20,6 +20,7 @@ export default function Profile() {
   const [todayWeight, setTodayWeight] = useState(log.weight || '');
   const [apiKeyInput, setApiKeyInput] = useState(profile?.geminiApiKey || '');
   const [apiKeySaved, setApiKeySaved] = useState(false);
+  const [apiKeyError, setApiKeyError] = useState('');
 
   const toggleDarkMode = () => { const next = !darkMode; setDarkMode(next); document.documentElement.classList.toggle('dark', next); localStorage.setItem('darkMode', JSON.stringify(next)); };
   const handleSave = () => { updateProfile(form); setEditing(false); };
@@ -69,19 +70,28 @@ export default function Profile() {
           <div className="flex gap-2">
             <input type="password" value={apiKeyInput} onChange={(e) => {
                 setApiKeyInput(e.target.value);
-                const saved = JSON.parse(localStorage.getItem('userProfile') || '{}');
-                saved.geminiApiKey = e.target.value;
-                localStorage.setItem('userProfile', JSON.stringify(saved));
+                setApiKeyError('');
               }} placeholder={t.geminiKeyPlaceholder}
               className="flex-1 px-3 py-2.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm outline-none focus:border-primary text-slate-700 dark:text-slate-200" />
             <button onClick={() => {
-                updateProfile({ geminiApiKey: apiKeyInput });
+                const trimmed = apiKeyInput.trim();
+                if (trimmed.length < 39) {
+                  setApiKeyError(`API 키가 너무 짧습니다. (현재 ${trimmed.length}자 / 39자 필요)`);
+                  return;
+                }
+                if (!trimmed.startsWith('AIza')) {
+                  setApiKeyError('올바른 API 키 형식이 아닙니다. AIza로 시작해야 합니다.');
+                  return;
+                }
+                updateProfile({ geminiApiKey: trimmed });
+                setApiKeyError('');
                 setApiKeySaved(true);
                 setTimeout(() => setApiKeySaved(false), 2000);
               }} className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
               {t.save}
             </button>
           </div>
+          {apiKeyError && <p className="text-xs text-red-500 mt-2">{apiKeyError}</p>}
           {apiKeySaved && <p className="text-xs text-green-500 mt-2">API 키가 저장되었습니다! ✅</p>}
           <p className="text-[10px] text-slate-400 mt-2">{t.geminiKeyDesc}</p>
         </div>
