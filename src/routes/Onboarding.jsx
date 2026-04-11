@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useProfile } from '../hooks/useProfile';
-import { calculateBMR, calculateBMI, getBMICategory, calculateTDEE } from '../services/nutrition';
+import { calculateBMR, calculateBMI, getBMICategory, calculateTDEE, getCaloriesForGoal } from '../services/nutrition';
 import { useLang } from '../contexts/LanguageContext';
 import Trainer from '../components/characters/Trainer';
 import Mascot from '../components/characters/Mascot';
@@ -10,11 +10,12 @@ import Mascot from '../components/characters/Mascot';
 export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState({ name: '', gender: '', age: '', height: '', weight: '', goalWeight: '', activityLevel: '', activityMultiplier: 1.2 });
+  const [goal, setGoal] = useState('diet');
   const { saveProfile } = useProfile();
   const navigate = useNavigate();
   const { t, lang, toggleLang } = useLang();
   const onChange = (u) => setData((p) => ({ ...p, ...u }));
-  const handleComplete = (dailyCalorieGoal) => { saveProfile({ ...data, dailyCalorieGoal }); navigate('/'); };
+  const handleComplete = (dailyCalorieGoal) => { saveProfile({ ...data, goal, dailyCalorieGoal }); navigate('/'); };
 
   const ACT = [
     { id: 'sedentary', label: t.actSedentary, m: 1.2 },
@@ -92,13 +93,33 @@ export default function Onboarding() {
                 <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-slate-100 dark:border-slate-700"><p className="text-xs text-slate-400 mb-1">{t.bmi}</p><p className="text-2xl font-bold text-slate-700 dark:text-slate-200">{bmi}</p><p className={`text-xs font-medium mt-1 ${bmiCat.color}`}>{t[bmiCat.key] || bmiCat.label}</p></div>
                 <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-slate-100 dark:border-slate-700"><p className="text-xs text-slate-400 mb-1">{t.bmr}</p><p className="text-2xl font-bold text-slate-700 dark:text-slate-200">{bmr}</p><p className="text-xs text-slate-400 mt-1">{t.bmrUnit}</p></div>
               </div>
-              <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-5 text-white text-center"><p className="text-xs opacity-80 mb-1">{t.dailyRecommended}</p><p className="text-3xl font-bold">{tdee}kcal</p><p className="text-xs opacity-80 mt-1">{t.calorieGuide}</p></div>
+              <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-5 text-white text-center"><p className="text-xs opacity-80 mb-1">{t.dailyRecommended}</p><p className="text-3xl font-bold">{getCaloriesForGoal(tdee, goal)}kcal</p><p className="text-xs opacity-80 mt-1">TDEE {tdee}kcal</p></div>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">🎯 목표 선택</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <button onClick={() => setGoal('diet')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'diet' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+                    <div className="text-lg">🔥</div>
+                    <div className="font-bold">{tdee - 500}</div>
+                    <div>체중 감소</div>
+                  </button>
+                  <button onClick={() => setGoal('maintain')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'maintain' ? 'bg-green-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+                    <div className="text-lg">⚖️</div>
+                    <div className="font-bold">{tdee}</div>
+                    <div>체중 유지</div>
+                  </button>
+                  <button onClick={() => setGoal('bulk')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'bulk' ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+                    <div className="text-lg">💪</div>
+                    <div className="font-bold">{tdee + 300}</div>
+                    <div>벌크업</div>
+                  </button>
+                </div>
+              </div>
               <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
                 <div className="flex justify-between text-sm"><span className="text-slate-400">{t.currentWeight}</span><span className="font-medium text-slate-700 dark:text-slate-200">{data.weight}kg</span></div>
                 <div className="flex justify-between text-sm mt-2"><span className="text-slate-400">{t.goalWeightLabel}</span><span className="font-medium text-primary">{data.goalWeight}kg</span></div>
                 <div className="flex justify-between text-sm mt-2"><span className="text-slate-400">{t.weightToLose}</span><span className="font-medium text-orange-500">{Math.max(0, data.weight - data.goalWeight)}kg</span></div>
               </div>
-              <button onClick={() => handleComplete(tdee)} className="w-full py-3.5 bg-primary text-white rounded-2xl font-semibold text-sm">{t.startNow}</button>
+              <button onClick={() => handleComplete(getCaloriesForGoal(tdee, goal))} className="w-full py-3.5 bg-primary text-white rounded-2xl font-semibold text-sm">{t.startNow}</button>
             </div>
           )}
         </div>

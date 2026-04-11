@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import { STORAGE_KEYS } from '../utils/constants';
-import { calculateBMR, calculateTDEE } from '../services/nutrition';
+import { calculateBMR, calculateTDEE, getCaloriesForGoal } from '../services/nutrition';
 
 const ProfileContext = createContext(null);
 
@@ -11,11 +11,15 @@ export function ProfileProvider({ children }) {
   const saveProfile = (data) => {
     const bmr = calculateBMR(data.gender, data.weight, data.height, data.age);
     const multiplier = data.activityMultiplier || 1.2;
-    const dailyCalorieGoal = data.dailyCalorieGoal || calculateTDEE(bmr, multiplier);
+    const tdee = calculateTDEE(bmr, multiplier);
+    const goal = data.goal || 'diet';
+    const dailyCalorieGoal = data.dailyCalorieGoal || getCaloriesForGoal(tdee, goal);
 
     setProfile({
       ...data,
       bmr,
+      tdee,
+      goal,
       dailyCalorieGoal,
       waterGoal: data.waterGoal || 8,
       createdAt: data.createdAt || new Date().toISOString(),
@@ -25,11 +29,15 @@ export function ProfileProvider({ children }) {
   const updateProfile = (updates) => {
     setProfile((prev) => {
       const merged = { ...prev, ...updates };
-      if (updates.weight || updates.height || updates.age || updates.gender || updates.activityMultiplier) {
+      const recomputeBmr = updates.weight || updates.height || updates.age || updates.gender || updates.activityMultiplier;
+      if (recomputeBmr) {
         merged.bmr = calculateBMR(merged.gender, merged.weight, merged.height, merged.age);
-        if (!updates.dailyCalorieGoal) {
-          merged.dailyCalorieGoal = calculateTDEE(merged.bmr, merged.activityMultiplier || 1.2);
-        }
+        merged.tdee = calculateTDEE(merged.bmr, merged.activityMultiplier || 1.2);
+      }
+      if ((recomputeBmr || updates.goal) && !updates.dailyCalorieGoal) {
+        const tdee = merged.tdee || calculateTDEE(merged.bmr, merged.activityMultiplier || 1.2);
+        merged.tdee = tdee;
+        merged.dailyCalorieGoal = getCaloriesForGoal(tdee, merged.goal || 'diet');
       }
       return merged;
     });

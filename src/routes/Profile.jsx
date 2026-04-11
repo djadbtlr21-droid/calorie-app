@@ -4,7 +4,7 @@ import PageContainer from '../components/layout/PageContainer';
 import PageHeader from '../components/layout/PageHeader';
 import { useProfile } from '../hooks/useProfile';
 import { useDailyLog } from '../hooks/useDailyLog';
-import { calculateBMI, getBMICategory } from '../services/nutrition';
+import { calculateBMI, getBMICategory, calculateBMR, calculateTDEE, getCaloriesForGoal } from '../services/nutrition';
 import { useLang } from '../contexts/LanguageContext';
 import Trainer from '../components/characters/Trainer';
 import Mascot from '../components/characters/Mascot';
@@ -20,6 +20,18 @@ export default function Profile() {
   const [todayWeight, setTodayWeight] = useState(log.weight || '');
   const [apiKeyInput, setApiKeyInput] = useState(profile?.geminiApiKey || '');
   const [apiKeyMessage, setApiKeyMessage] = useState(null);
+  const [goalToast, setGoalToast] = useState(false);
+
+  const bmr = profile ? (profile.bmr || calculateBMR(profile.gender, profile.weight, profile.height, profile.age)) : 0;
+  const tdee = profile ? (profile.tdee || calculateTDEE(bmr, profile.activityMultiplier || 1.2)) : 0;
+  const goal = profile?.goal || 'diet';
+
+  const handleGoalChange = (newGoal) => {
+    const newDailyGoal = getCaloriesForGoal(tdee, newGoal);
+    updateProfile({ goal: newGoal, dailyCalorieGoal: newDailyGoal });
+    setGoalToast(true);
+    setTimeout(() => setGoalToast(false), 2000);
+  };
 
   const handleSaveApiKey = () => {
     const trimmed = apiKeyInput.trim();
@@ -64,6 +76,42 @@ export default function Profile() {
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-2"><p className="text-xs text-slate-400">{t.goalWeightShort}</p><p className="text-sm font-bold text-primary">{profile?.goalWeight}kg</p></div>
           </div>
         </div>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm">
+          <h3 className="font-bold text-slate-700 dark:text-slate-200 mb-3">📊 칼로리 계산 결과</h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-slate-500 dark:text-slate-400">기초 대사량 (BMR)</span>
+              <span className="font-bold text-slate-700 dark:text-slate-200">{bmr} kcal</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500 dark:text-slate-400">활동 대사량 (TDEE)</span>
+              <span className="font-bold text-slate-700 dark:text-slate-200">{tdee} kcal</span>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <button onClick={() => handleGoalChange('diet')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'diet' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+              <div className="text-lg">🔥</div>
+              <div className="font-bold">{tdee - 500}</div>
+              <div>체중 감소</div>
+            </button>
+            <button onClick={() => handleGoalChange('maintain')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'maintain' ? 'bg-green-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+              <div className="text-lg">⚖️</div>
+              <div className="font-bold">{tdee}</div>
+              <div>체중 유지</div>
+            </button>
+            <button onClick={() => handleGoalChange('bulk')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'bulk' ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+              <div className="text-lg">💪</div>
+              <div className="font-bold">{tdee + 300}</div>
+              <div>벌크업</div>
+            </button>
+          </div>
+          <p className="text-xs text-slate-400 mt-2 text-center">선택한 목표에 따라 일일 칼로리 목표가 자동으로 변경됩니다</p>
+        </div>
+        {goalToast && (
+          <div className="fixed top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-medium z-50 animate-fade-in-up">
+            목표가 변경되었습니다! ✅
+          </div>
+        )}
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-3"><Scale size={16} className="text-primary" /><h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">{t.todayWeight}</h3></div>
           <div className="flex gap-2">

@@ -1,8 +1,23 @@
+// Mifflin-St Jeor Formula (more accurate than Harris-Benedict)
 export function calculateBMR(gender, weight, height, age) {
   if (gender === 'male') {
-    return Math.round(88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age));
+    return Math.round(10 * weight + 6.25 * height - 5 * age + 5);
   }
-  return Math.round(447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age));
+  return Math.round(10 * weight + 6.25 * height - 5 * age - 161);
+}
+
+export const GOAL_OFFSETS = { diet: -500, maintain: 0, bulk: 300 };
+
+export function calculateGoalCalories(tdee) {
+  return {
+    diet: tdee + GOAL_OFFSETS.diet,
+    maintain: tdee + GOAL_OFFSETS.maintain,
+    bulk: tdee + GOAL_OFFSETS.bulk,
+  };
+}
+
+export function getCaloriesForGoal(tdee, goal) {
+  return tdee + (GOAL_OFFSETS[goal] ?? 0);
 }
 
 export function calculateBMI(weight, heightCm) {
