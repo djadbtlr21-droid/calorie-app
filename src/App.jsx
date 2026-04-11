@@ -11,7 +11,14 @@ import Stats from './routes/Stats';
 import Profile from './routes/Profile';
 
 function MainLayout() {
-  return (<><Outlet /><BottomNav /></>);
+  return (
+    <div className="flex flex-col h-dvh overflow-hidden">
+      <main className="flex-1 overflow-y-auto overscroll-none">
+        <Outlet />
+      </main>
+      <BottomNav />
+    </div>
+  );
 }
 
 function AppGuard() {
