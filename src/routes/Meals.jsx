@@ -19,7 +19,7 @@ export default function Meals() {
   const [geminiResult, setGeminiResult] = useState(null);
   const { t } = useLang();
 
-  const handlePhotoResult = (result) => { setGeminiResult(result); if (result?.foods?.length > 0) setSelectedFood(result.foods[0]); };
+  const handlePhotoResult = (result) => { setGeminiResult(result); };
   const handleSave = (meal) => { addMeal(meal); setSelectedFood(null); setGeminiResult(null); };
 
   return (
@@ -36,15 +36,7 @@ export default function Meals() {
           <>
             {mode === 'photo' && <PhotoCapture apiKey={profile?.geminiApiKey?.trim()} onResult={handlePhotoResult} />}
             {mode === 'manual' && <FoodSearch onSelect={(f) => { setSelectedFood(f); setGeminiResult(null); }} />}
-            {geminiResult?.dietComment && (
-              <div className="flex items-start gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                <Trainer expression={geminiResult.dietScore >= 7 ? 'happy' : geminiResult.dietScore >= 4 ? 'encouraging' : 'disappointed'} size={40} />
-                <p className={`text-sm font-medium flex-1 ${geminiResult.dietScore >= 7 ? 'text-green-600 dark:text-green-400' : geminiResult.dietScore >= 4 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-500 dark:text-red-400'}`}>
-                  {geminiResult.dietComment}
-                </p>
-              </div>
-            )}
-            {geminiResult?.foods?.length > 1 && (
+            {geminiResult?.foods?.length >= 1 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2"><Trainer expression="happy" size={32} /><p className="text-xs text-slate-500 dark:text-slate-400">{t.multiFoodFound}</p></div>
                 {geminiResult.foods.map((food, i) => (

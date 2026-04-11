@@ -11,6 +11,7 @@ export default function PhotoCapture({ apiKey, onResult }) {
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [debugInfo, setDebugInfo] = useState('');
+  const [lastResult, setLastResult] = useState(null);
   const cameraRef = useRef(null);
   const galleryRef = useRef(null);
   const { t } = useLang();
@@ -20,6 +21,7 @@ export default function PhotoCapture({ apiKey, onResult }) {
     setPreview(URL.createObjectURL(file));
     setImageFile(file);
     setError('');
+    setLastResult(null);
   };
 
   async function compressAndConvertImage(file) {
@@ -65,6 +67,7 @@ export default function PhotoCapture({ apiKey, onResult }) {
       const trimmedKey = apiKey?.trim();
       setDebugInfo(`이미지: ${Math.round(base64.length * 0.75 / 1024)}KB | 키길이: ${trimmedKey?.length} | 키앞4자: ${trimmedKey?.substring(0,4)}`);
       const result = await analyzeFoodImage(base64, trimmedKey, description, 'image/jpeg');
+      setLastResult(result);
       onResult(result);
       setDescription('');
       setPreview(null);
@@ -130,6 +133,15 @@ export default function PhotoCapture({ apiKey, onResult }) {
       )}
 
       {error && <div className="flex items-center gap-3"><Trainer expression="disappointed" size={40} /><p className="text-sm text-red-500">{error}</p></div>}
+
+      {lastResult?.dietComment && (
+        <div className="flex items-start gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+          <Trainer expression={lastResult.dietScore >= 7 ? 'happy' : lastResult.dietScore >= 4 ? 'encouraging' : 'disappointed'} size={40} />
+          <p className={`text-sm font-medium flex-1 ${lastResult.dietScore >= 7 ? 'text-green-600 dark:text-green-400' : lastResult.dietScore >= 4 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-500 dark:text-red-400'}`}>
+            {lastResult.dietComment}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
