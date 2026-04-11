@@ -13,8 +13,10 @@ import Profile from './routes/Profile';
 function MainLayout() {
   return (
     <div className="flex flex-col h-dvh">
-      <main className="flex-1 overflow-y-auto">
-        <Outlet />
+      <main className="flex-1 overflow-y-auto pb-16">
+        <div className="max-w-lg mx-auto">
+          <Outlet />
+        </div>
       </main>
       <BottomNav />
     </div>

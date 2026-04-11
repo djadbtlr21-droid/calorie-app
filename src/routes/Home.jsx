@@ -17,7 +17,7 @@ export default function Home() {
   const { t } = useLang();
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
       <DailyCheckin meals={log.meals} waterCups={log.waterCups} exercises={log.exercises} waterGoal={profile?.waterGoal || 8} onNavigate={navigate} />
       <PageHeader title={`${t.appName} 💪`} />
       <TrainerMessage consumed={totalCaloriesConsumed} goal={profile?.dailyCalorieGoal || 2000} burned={totalCaloriesBurned} waterCups={log.waterCups} waterGoal={profile?.waterGoal || 8} name={profile?.name} />

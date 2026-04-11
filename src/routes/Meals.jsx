@@ -16,38 +16,50 @@ export default function Meals() {
   const { log, addMeal, removeMeal } = useDailyLog();
   const [mode, setMode] = useState('manual');
   const [selectedFood, setSelectedFood] = useState(null);
+  const [selectedFoodIndex, setSelectedFoodIndex] = useState(null);
   const [geminiResult, setGeminiResult] = useState(null);
   const { t } = useLang();
 
   const handlePhotoResult = (result) => { setGeminiResult(result); };
-  const handleSave = (meal) => { addMeal(meal); setSelectedFood(null); setGeminiResult(null); };
+  const handleSave = (meal) => {
+    addMeal(meal);
+    if (selectedFoodIndex !== null) {
+      setGeminiResult(prev => {
+        if (!prev?.foods) return null;
+        const remaining = prev.foods.filter((_, i) => i !== selectedFoodIndex);
+        return remaining.length > 0 ? { ...prev, foods: remaining } : null;
+      });
+    }
+    setSelectedFood(null);
+    setSelectedFoodIndex(null);
+  };
 
   return (
     <PageContainer>
       <div className="space-y-4">
         <PageHeader title={`${t.mealRecordTitle} 🍽️`} />
         <div className="flex bg-slate-100 dark:bg-slate-700 rounded-xl p-1">
-          <button onClick={() => { setMode('photo'); setSelectedFood(null); }} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === 'photo' ? 'bg-white dark:bg-slate-600 text-primary shadow-sm' : 'text-slate-400'}`}><Camera size={16} />{t.photoRecognition}</button>
-          <button onClick={() => { setMode('manual'); setSelectedFood(null); }} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === 'manual' ? 'bg-white dark:bg-slate-600 text-primary shadow-sm' : 'text-slate-400'}`}><Edit3 size={16} />{t.manualInput}</button>
+          <button onClick={() => { setMode('photo'); setSelectedFood(null); setSelectedFoodIndex(null); }} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === 'photo' ? 'bg-white dark:bg-slate-600 text-primary shadow-sm' : 'text-slate-400'}`}><Camera size={16} />{t.photoRecognition}</button>
+          <button onClick={() => { setMode('manual'); setSelectedFood(null); setSelectedFoodIndex(null); }} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === 'manual' ? 'bg-white dark:bg-slate-600 text-primary shadow-sm' : 'text-slate-400'}`}><Edit3 size={16} />{t.manualInput}</button>
         </div>
         {selectedFood ? (
-          <MealEntryForm initialFood={selectedFood} onSave={handleSave} onCancel={() => setSelectedFood(null)} />
+          <MealEntryForm initialFood={selectedFood} onSave={handleSave} onCancel={() => { setSelectedFood(null); setSelectedFoodIndex(null); }} />
         ) : (
           <>
             {mode === 'photo' && <PhotoCapture apiKey={profile?.geminiApiKey?.trim()} onResult={handlePhotoResult} />}
-            {mode === 'manual' && <FoodSearch onSelect={(f) => { setSelectedFood(f); setGeminiResult(null); }} />}
+            {mode === 'manual' && <FoodSearch onSelect={(f) => { setSelectedFood(f); setSelectedFoodIndex(null); setGeminiResult(null); }} />}
             {geminiResult?.foods?.length >= 1 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2"><Trainer expression="happy" size={32} /><p className="text-xs text-slate-500 dark:text-slate-400">{t.multiFoodFound}</p></div>
                 {geminiResult.foods.map((food, i) => (
-                  <button key={i} onClick={() => setSelectedFood(food)} className="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/30 text-left">
+                  <button key={i} onClick={() => { setSelectedFood(food); setSelectedFoodIndex(i); }} className="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/30 text-left">
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{food.name}</span><span className="text-sm font-bold text-primary">{food.calories}kcal</span>
                   </button>
                 ))}
               </div>
             )}
             {mode === 'manual' && (
-              <button onClick={() => setSelectedFood({ name: '', calories: '', protein: '', carbs: '', fat: '' })} className="w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl text-sm text-slate-400 hover:border-primary hover:text-primary transition-colors">{t.customEntry}</button>
+              <button onClick={() => { setSelectedFood({ name: '', calories: '', protein: '', carbs: '', fat: '' }); setSelectedFoodIndex(null); }} className="w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl text-sm text-slate-400 hover:border-primary hover:text-primary transition-colors">{t.customEntry}</button>
             )}
           </>
         )}
