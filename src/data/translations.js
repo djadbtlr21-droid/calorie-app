@@ -12,7 +12,7 @@ export const T = {
     darkMode: '다크 모드', language: '언어',
     geminiKey: 'Gemini API 키', geminiKeyPlaceholder: 'API 키 입력',
     geminiKeyDesc: '음식 사진 인식에 사용됩니다. Google AI Studio에서 발급받으세요.',
-    photoRecognition: '사진 인식', manualInput: '직접 입력',
+    photoRecognition: 'AI 사진 인식', manualInput: '직접 입력',
     takePhoto: '사진 찍기', chooseGallery: '갤러리에서 선택',
     searchFood: '음식 검색...', searchExercise: '운동 검색...',
     todayRecord: '오늘의 기록', todaySummary: '오늘 요약',

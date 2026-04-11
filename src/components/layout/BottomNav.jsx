@@ -16,7 +16,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-slate-700 safe-area-bottom z-50">
+    <nav className="w-full bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-slate-700 safe-area-bottom">
       <div className="max-w-lg mx-auto flex">
         {tabs.map(({ path, label, icon: Icon }) => {
           const active = location.pathname === path;
