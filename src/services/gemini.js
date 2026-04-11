@@ -1,7 +1,17 @@
 ﻿const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent';
 
-const PROMPT = `Analyze this food image and respond with ONLY a JSON object, no other text:
-{"foods":[{"name":"food name in Korean","amount":"portion size","calories":number,"protein":number,"carbs":number,"fat":number}],"totalCalories":number,"confidence":"높음"}`;
+const PROMPT = `Analyze this food image and respond with ONLY a JSON object, no other text.
+You are also a strict but caring female fitness trainer. Assess how healthy the food is and give a short comment in Korean.
+
+Response format:
+{"foods":[{"name":"food name in Korean","amount":"portion size","calories":number,"protein":number,"carbs":number,"fat":number}],"totalCalories":number,"confidence":"높음/중간/낮음","dietScore":number,"dietComment":"trainer comment"}
+
+dietScore: 1-10 (10=very healthy, 1=very unhealthy)
+dietComment: 1 sentence in Korean, in character as a strict but caring female fitness trainer.
+- Score 7-10 (healthy): encouraging, e.g. '오 닭가슴살이네요! 완벽한 다이어트 식단이에요! 계속 이렇게 드세요! 💪'
+- Score 4-6 (medium): cautious, e.g. '칼로리가 좀 있지만 가끔은 괜찮아요. 오늘 운동 꼭 하세요! 🏃'
+- Score 1-3 (unhealthy): scolding but funny, e.g. '이거 드시면 안 돼요! 살쪄요! 오늘 운동 2배로 하세요! 😤'
+Be creative and vary responses. Be direct and funny.`;
 
 export async function analyzeFoodImage(imageBase64, apiKey, userDescription = '', mimeType = 'image/jpeg') {
   const cleanKey = apiKey?.trim();

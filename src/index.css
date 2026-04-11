@@ -22,10 +22,13 @@
 
   html {
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    height: 100%;
+    overflow: hidden;
   }
 
   body {
-    min-height: 100dvh;
+    height: 100%;
+    overflow: hidden;
     -webkit-font-smoothing: antialiased;
     background-color: #F0F9FF;
     color: #1E293B;
@@ -37,9 +40,10 @@
   }
 
   #root {
-    min-height: 100dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 }
 
