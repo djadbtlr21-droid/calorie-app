@@ -26,7 +26,7 @@ export default function WaterTracker({ cups, onSetCups }) {
               transform: filled ? 'scale(1.05)' : 'scale(1)',
               minHeight: 44
             }}>
-              {filled ? '💧' : ''}
+              {filled ? '💧' : <span style={{ opacity: 0.4 }}>🫙</span>}
             </button>
           );
         })}

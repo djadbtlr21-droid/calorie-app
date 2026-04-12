@@ -6,8 +6,7 @@ import { useProfile } from '../hooks/useProfile';
 import { useDailyLog } from '../hooks/useDailyLog';
 import { calculateBMI, getBMICategory, calculateBMR, calculateTDEE, getCaloriesForGoal } from '../services/nutrition';
 import { useLang } from '../contexts/LanguageContext';
-import Trainer from '../components/characters/Trainer';
-import Mascot from '../components/characters/Mascot';
+// Characters removed — using clean avatar instead
 
 export default function Profile() {
   const { profile, updateProfile, resetProfile } = useProfile();
@@ -67,9 +66,17 @@ export default function Profile() {
     <PageContainer>
       <div className="space-y-4">
         <PageHeader title={`${t.profileTitle} 👤`} />
-        <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm text-center">
-          <Mascot size={64} className="mx-auto mb-3" />
-          <h2 className="text-lg font-bold text-slate-700 dark:text-slate-200">{profile?.name}</h2>
+        <div className="card" style={{ padding: 20, textAlign: 'center' }}>
+          <div style={{
+            width: 72, height: 72, borderRadius: '50%',
+            background: '#007AFF',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'white', fontSize: '1.8rem', fontWeight: 700,
+            margin: '0 auto 12px'
+          }}>
+            {profile?.name?.[0] || '👤'}
+          </div>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-1)' }}>{profile?.name}</h2>
           <p className="text-xs text-slate-400 mt-1">{profile?.height}cm · {profile?.weight}kg · {t.bmi} {bmi} ({t[bmiCat.key] || bmiCat.label})</p>
           <div className="mt-3 grid grid-cols-2 gap-2 text-center">
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-2"><p className="text-xs text-slate-400">{t.dailyGoal}</p><p className="text-sm font-bold text-primary">{profile?.dailyCalorieGoal}kcal</p></div>
@@ -171,7 +178,7 @@ export default function Profile() {
         <div className="pt-4">
           {showReset ? (
             <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 space-y-3">
-              <div className="flex items-center gap-2"><Trainer expression="disappointed" size={40} /><p className="text-sm text-red-600 dark:text-red-400">{t.confirmReset}</p></div>
+              <div className="flex items-center gap-2"><span style={{ fontSize: '1.5rem' }}>⚠️</span><p className="text-sm text-red-600 dark:text-red-400">{t.confirmReset}</p></div>
               <div className="flex gap-3">
                 <button onClick={() => setShowReset(false)} className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-500 rounded-xl text-sm font-medium">{t.no}</button>
                 <button onClick={handleReset} className="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-1"><Trash2 size={14} />{t.delete}</button>
