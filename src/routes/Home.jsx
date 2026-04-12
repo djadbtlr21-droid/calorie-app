@@ -22,9 +22,11 @@ export default function Home() {
   const { t, lang } = useLang();
 
   const dailyGoal = profile?.dailyCalorieGoal || 2000;
-  const remaining = dailyGoal - totalCaloriesConsumed + totalCaloriesBurned;
   const consumed = totalCaloriesConsumed;
   const burned = totalCaloriesBurned;
+  const goalMode = profile?.goal || 'diet';
+  const effectiveGoal = goalMode === 'diet' ? dailyGoal : dailyGoal + burned;
+  const remaining = effectiveGoal - consumed;
 
   const totalProtein = log.meals.reduce((s, m) => s + (m.protein || 0), 0);
   const totalCarbs = log.meals.reduce((s, m) => s + (m.carbs || 0), 0);
@@ -35,8 +37,7 @@ export default function Home() {
   const dayName = now.toLocaleDateString('ko-KR', { weekday: 'long' });
   const monthDay = now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
   const name = profile?.name || '';
-  const goalMode = profile?.goal || 'maintain';
-  const goalMeta = GOAL_INFO[goalMode] || GOAL_INFO.maintain;
+  const goalMeta = GOAL_INFO[goalMode] || GOAL_INFO.diet;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 16 }}>
@@ -86,7 +87,7 @@ export default function Home() {
 
       {/* THE RING — enriched card */}
       <div className="card fade" style={{ margin: '0 16px', padding: '28px 20px' }}>
-        <CalorieRing consumed={consumed} goal={dailyGoal} burned={burned} />
+        <CalorieRing consumed={consumed} goal={effectiveGoal} />
 
         {/* Divider */}
         <div style={{ width: '100%', height: 1, background: 'var(--divider)', margin: '16px 0 14px' }} />
@@ -97,7 +98,7 @@ export default function Home() {
             { icon: '🍽', label: t.consumed || '섭취', value: consumed, unit: 'kcal', color: 'var(--red)' },
             { icon: '🏃', label: t.burned || '소모', value: burned, unit: 'kcal', color: 'var(--green)' },
             { icon: '⚡', label: t.netCalories || '순', value: consumed - burned, unit: 'kcal',
-              color: (consumed - burned) > dailyGoal ? 'var(--red)' : 'var(--blue)' },
+              color: (consumed - burned) > effectiveGoal ? 'var(--red)' : 'var(--blue)' },
           ].map((s) => (
             <div key={s.label}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-3)', marginBottom: 3 }}>{s.icon} {s.label}</div>
@@ -115,9 +116,9 @@ export default function Home() {
             fontSize: '0.8rem', color: 'var(--text-2)',
             textAlign: 'center', width: '100%'
           }}>
-            {consumed >= dailyGoal
+            {consumed >= effectiveGoal
               ? `⚠️ ${t.goalExceeded || '오늘 목표 칼로리를 초과했습니다'}`
-              : `✅ ${(t.goalRemaining || '목표까지 {n}kcal 남았습니다').replace('{n}', dailyGoal - consumed)}`}
+              : `✅ ${(t.goalRemaining || '목표까지 {n}kcal 남았습니다').replace('{n}', effectiveGoal - consumed)}`}
           </div>
         )}
       </div>

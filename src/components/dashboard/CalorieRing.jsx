@@ -1,12 +1,11 @@
 import { useLang } from '../../contexts/LanguageContext';
 
-export default function CalorieRing({ consumed, goal, burned }) {
+export default function CalorieRing({ consumed, goal }) {
   const { t } = useLang();
   const size = 200;
   const r = 90;
   const circumference = 2 * Math.PI * r;
-  const netGoal = goal + burned;
-  const progress = Math.min(consumed / (netGoal || 1), 1);
+  const progress = Math.min(consumed / (goal || 1), 1);
   const offset = circumference * (1 - progress);
   const pct = Math.round(progress * 100);
 
@@ -28,13 +27,20 @@ export default function CalorieRing({ consumed, goal, burned }) {
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center'
       }}>
-        <span className="num-hero" style={{ fontSize: '4rem', color: 'var(--text-1)' }}>
+        <span style={{
+          fontFamily: "'Oswald', sans-serif",
+          fontSize: '2.8rem',
+          fontWeight: 600,
+          letterSpacing: '-0.02em',
+          lineHeight: 1,
+          color: 'var(--text-1)'
+        }}>
           {consumed}
         </span>
-        <span style={{ fontSize: '0.72rem', color: 'var(--text-3)', marginTop: 4, fontWeight: 500 }}>
-          / {netGoal} kcal
+        <span style={{ fontSize: '0.65rem', color: 'var(--text-3)', marginTop: 4, fontWeight: 500 }}>
+          / {goal} kcal
         </span>
-        <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--red)', marginTop: 2 }}>
+        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--red)', marginTop: 2 }}>
           {pct}%
         </span>
       </div>
