@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: '빼야겠지?',
-        short_name: '빼야겠지?',
-        description: '나만의 칼로리 트래커',
+        name: '엄:격 칼로리',
+        short_name: '엄:격 칼로리',
+        description: '엄:격 칼로리 - 엄격하고 정밀한 AI 식단 & 운동 기록',
         theme_color: '#6366f1',
         background_color: '#f0f9ff',
         display: 'standalone',
