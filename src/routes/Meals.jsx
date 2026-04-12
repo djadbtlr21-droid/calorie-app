@@ -36,33 +36,85 @@ export default function Meals() {
 
   return (
     <PageContainer>
-      <div className="space-y-4">
+      <div className="space-y-4 animate-page-enter">
         <PageHeader title={`${t.mealRecordTitle} 🍽️`} />
-        <div className="flex bg-slate-100 dark:bg-slate-700 rounded-xl p-1">
-          <button onClick={() => { setMode('photo'); setSelectedFood(null); setSelectedFoodIndex(null); }} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === 'photo' ? 'bg-white dark:bg-slate-600 text-primary shadow-sm' : 'text-slate-400'}`}><Camera size={16} />{t.photoRecognition}</button>
-          <button onClick={() => { setMode('manual'); setSelectedFood(null); setSelectedFoodIndex(null); }} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === 'manual' ? 'bg-white dark:bg-slate-600 text-primary shadow-sm' : 'text-slate-400'}`}><Edit3 size={16} />{t.manualInput}</button>
+
+        {/* Tab switcher */}
+        <div className="ap-tabs">
+          <button
+            onClick={() => { setMode('photo'); setSelectedFood(null); setSelectedFoodIndex(null); }}
+            className={`ap-tab ${mode === 'photo' ? 'active' : ''}`}
+          >
+            <Camera size={16} />{t.photoRecognition}
+          </button>
+          <button
+            onClick={() => { setMode('manual'); setSelectedFood(null); setSelectedFoodIndex(null); }}
+            className={`ap-tab ${mode === 'manual' ? 'active' : ''}`}
+          >
+            <Edit3 size={16} />{t.manualInput}
+          </button>
         </div>
+
         {selectedFood ? (
           <MealEntryForm initialFood={selectedFood} onSave={handleSave} onCancel={() => { setSelectedFood(null); setSelectedFoodIndex(null); }} />
         ) : (
           <>
             {mode === 'photo' && <PhotoCapture apiKey={profile?.geminiApiKey?.trim()} onResult={handlePhotoResult} />}
             {mode === 'manual' && <FoodSearch onSelect={(f) => { setSelectedFood(f); setSelectedFoodIndex(null); setGeminiResult(null); }} />}
+
             {geminiResult?.foods?.length >= 1 && (
               <div className="space-y-2">
-                <div className="flex items-center gap-2"><Trainer expression="happy" size={32} /><p className="text-xs text-slate-500 dark:text-slate-400">{t.multiFoodFound}</p></div>
+                <div className="flex items-center gap-2">
+                  <Trainer expression="happy" size={32} />
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t.multiFoodFound}</p>
+                </div>
                 {geminiResult.foods.map((food, i) => (
-                  <button key={i} onClick={() => { setSelectedFood(food); setSelectedFoodIndex(i); }} className="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/30 text-left">
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{food.name}</span><span className="text-sm font-bold text-primary">{food.calories}kcal</span>
+                  <button
+                    key={i}
+                    onClick={() => { setSelectedFood(food); setSelectedFoodIndex(i); }}
+                    className="ap-food-card"
+                    style={{ width: '100%', cursor: 'pointer', textAlign: 'left' }}
+                  >
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 10,
+                      background: 'var(--accent-purple-light)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '1.1rem', flexShrink: 0
+                    }}>🍽️</div>
+                    <div style={{ flex: 1 }}>
+                      <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{food.name}</span>
+                    </div>
+                    <span className="ap-pill" style={{
+                      background: 'var(--accent-purple-light)',
+                      color: 'var(--accent-purple)'
+                    }}>
+                      {food.calories}kcal
+                    </span>
                   </button>
                 ))}
               </div>
             )}
+
             {mode === 'manual' && (
-              <button onClick={() => { setSelectedFood({ name: '', calories: '', protein: '', carbs: '', fat: '' }); setSelectedFoodIndex(null); }} className="w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl text-sm text-slate-400 hover:border-primary hover:text-primary transition-colors">{t.customEntry}</button>
+              <button
+                onClick={() => { setSelectedFood({ name: '', calories: '', protein: '', carbs: '', fat: '' }); setSelectedFoodIndex(null); }}
+                style={{
+                  width: '100%', padding: 14,
+                  border: '2px dashed var(--border)',
+                  borderRadius: 'var(--radius-sm)',
+                  background: 'transparent',
+                  fontSize: '0.85rem',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {t.customEntry}
+              </button>
             )}
           </>
         )}
+
         <MealLog meals={log.meals} onRemove={removeMeal} />
       </div>
     </PageContainer>

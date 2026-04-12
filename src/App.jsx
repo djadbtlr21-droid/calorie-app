@@ -12,9 +12,9 @@ import Profile from './routes/Profile';
 
 function MainLayout() {
   return (
-    <div className="flex flex-col h-dvh">
-      <main className="flex-1 overflow-y-auto pb-16">
-        <div className="max-w-lg mx-auto">
+    <div className="flex flex-col h-dvh" style={{ background: 'var(--bg-primary)' }}>
+      <main className="flex-1 overflow-y-auto" style={{ paddingBottom: 80 }}>
+        <div className="max-w-[430px] mx-auto animate-page-enter">
           <Outlet />
         </div>
       </main>
@@ -50,7 +50,6 @@ export default function App() {
     const dark = JSON.parse(localStorage.getItem('darkMode') || 'false');
     document.documentElement.classList.toggle('dark', dark);
 
-    // Migration: ensure waterGoal is set to 8
     try {
       const saved = localStorage.getItem('userProfile');
       if (saved) {

@@ -16,20 +16,27 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 w-full bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-slate-700 safe-area-bottom z-40">
-      <div className="max-w-lg mx-auto flex">
+    <nav className="ap-bottom-nav safe-area-bottom">
+      <div className="max-w-[430px] mx-auto flex h-full items-center">
         {tabs.map(({ path, label, icon: Icon }) => {
           const active = location.pathname === path;
           return (
             <button
               key={path}
               onClick={() => navigate(path)}
-              className={`flex-1 flex flex-col items-center py-2 pt-3 gap-0.5 transition-colors ${
-                active ? 'text-primary' : 'text-slate-400 dark:text-slate-500'
-              }`}
+              className="flex-1 flex flex-col items-center justify-center gap-0.5 py-1"
+              style={{
+                color: active ? 'var(--accent-purple)' : 'var(--text-muted)',
+                transition: 'color 0.2s ease',
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                minHeight: 44
+              }}
             >
-              <Icon size={22} strokeWidth={active ? 2.5 : 2} />
-              <span className="text-[10px] font-medium">{label}</span>
+              <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
+              <span style={{ fontSize: '0.65rem', fontWeight: active ? 700 : 500 }}>{label}</span>
+              {active && <div className="ap-nav-dot" />}
             </button>
           );
         })}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Activity } from 'lucide-react';
 import PageContainer from '../components/layout/PageContainer';
 import PageHeader from '../components/layout/PageHeader';
 import ExerciseSearch from '../components/exercise/ExerciseSearch';
@@ -25,28 +26,51 @@ export default function Exercise() {
 
   return (
     <PageContainer>
-      <div className="space-y-4">
+      <div className="space-y-4 animate-page-enter">
         <PageHeader title={`${t.exerciseRecordTitle} 🏃`} />
-        {justAdded && (
-          <div className="flex items-end gap-3 animate-fade-in-up">
-            <Trainer expression="happy" size={48} />
-            <div className="flex-1 bg-white dark:bg-slate-800 rounded-2xl rounded-bl-sm p-3 shadow-sm border border-slate-100 dark:border-slate-700">
-              <p className="text-sm text-slate-700 dark:text-slate-200">{t.exerciseDone.replace('{name}', justAdded.name).replace('{duration}', justAdded.duration).replace('{cal}', justAdded.caloriesBurned)}</p>
+
+        {/* Today's burn header */}
+        {totalCaloriesBurned > 0 && (
+          <div className="ap-stat-card green" style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '16px 20px', borderRadius: 'var(--radius-md)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 12,
+                background: 'var(--accent-green)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}>
+                <Activity size={20} color="white" />
+              </div>
+              <div>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>{t.totalBurned}</span>
+                <div className="ap-big-number" style={{ fontSize: '1.6rem', color: 'var(--accent-green)' }}>
+                  -{totalCaloriesBurned}<span style={{ fontSize: '0.8rem', fontWeight: 500 }}>kcal</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
+
+        {justAdded && (
+          <div className="flex items-end gap-3 animate-fade-in-up">
+            <Trainer expression="happy" size={48} />
+            <div className="ap-card" style={{ flex: 1, padding: 14, borderRadius: 'var(--radius-md) var(--radius-md) var(--radius-md) 4px' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                {t.exerciseDone.replace('{name}', justAdded.name).replace('{duration}', justAdded.duration).replace('{cal}', justAdded.caloriesBurned)}
+              </p>
+            </div>
+          </div>
+        )}
+
         {selectedExercise ? (
           <ExerciseEntryForm exercise={selectedExercise} weight={profile?.weight || 70} onSave={handleSave} onCancel={() => setSelectedExercise(null)} />
         ) : (
           <ExerciseSearch onSelect={setSelectedExercise} />
         )}
+
         <ExerciseLog exercises={log.exercises} onRemove={removeExercise} />
-        {totalCaloriesBurned > 0 && (
-          <div className="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-4 text-center">
-            <p className="text-xs text-slate-500 dark:text-slate-400">{t.totalBurned}</p>
-            <p className="text-2xl font-bold text-orange-500">{totalCaloriesBurned}kcal</p>
-          </div>
-        )}
       </div>
     </PageContainer>
   );

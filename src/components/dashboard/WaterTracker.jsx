@@ -1,7 +1,7 @@
 import { Droplets } from 'lucide-react';
 import { useLang } from '../../contexts/LanguageContext';
 
-const WATER_GOAL = 8; // 8 cups = 1600ml, 200ml per cup
+const WATER_GOAL = 8;
 const ML_PER_CUP = 200;
 
 export default function WaterTracker({ cups, onSetCups }) {
@@ -14,33 +14,68 @@ export default function WaterTracker({ cups, onSetCups }) {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <Droplets size={18} className="text-blue-400" />
-          <span className="font-semibold text-sm text-slate-700 dark:text-slate-200">{t.water}</span>
+    <div className="ap-card" style={{ padding: 16 }}>
+      <div className="ap-section-header" style={{ marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 10,
+            background: 'var(--accent-blue-light)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center'
+          }}>
+            <Droplets size={16} color="var(--accent-blue)" />
+          </div>
+          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{t.water}</span>
         </div>
-        <div className="text-right">
-          <span className="text-sm font-bold text-blue-500">{cups}/{WATER_GOAL}{t.waterUnit}</span>
-          <span className="text-[10px] text-slate-400 ml-1">({totalMl}ml / {goalMl}ml)</span>
+        <div style={{ textAlign: 'right' }}>
+          <span className="ap-big-number" style={{ fontSize: '1.2rem', color: 'var(--accent-blue)' }}>
+            {cups}/{WATER_GOAL}
+          </span>
+          <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginLeft: 4 }}>
+            ({totalMl}ml)
+          </span>
         </div>
       </div>
-      <div className="w-full h-2 bg-blue-50 dark:bg-slate-700 rounded-full mb-3 overflow-hidden">
-        <div className="h-full bg-blue-400 rounded-full transition-all duration-500" style={{ width: `${Math.min((cups / WATER_GOAL) * 100, 100)}%` }} />
+
+      <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
+        {Array.from({ length: WATER_GOAL }).map((_, i) => {
+          const filled = i < cups;
+          return (
+            <button
+              key={i}
+              onClick={() => handleTap(i)}
+              style={{
+                flex: 1,
+                aspectRatio: '1',
+                borderRadius: 10,
+                border: filled ? 'none' : '2px solid var(--accent-blue-light)',
+                background: filled ? 'var(--accent-blue)' : 'transparent',
+                color: filled ? 'white' : 'var(--accent-blue-light)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                transform: filled ? 'scale(1.05)' : 'scale(1)',
+                minHeight: 44
+              }}
+            >
+              <Droplets size={14} />
+            </button>
+          );
+        })}
       </div>
-      <div className="grid grid-cols-4 gap-1.5">
-        {Array.from({ length: WATER_GOAL }).map((_, i) => (
-          <button key={i} onClick={() => handleTap(i)}
-            className={`aspect-square rounded-lg flex items-center justify-center transition-all duration-300 ${
-              i < cups ? 'bg-blue-400 text-white scale-105' : 'bg-blue-50 dark:bg-slate-700 text-blue-300 dark:text-slate-500'
-            }`}>
-            <Droplets size={14} />
-          </button>
-        ))}
-      </div>
+      <p style={{
+        textAlign: 'center', fontSize: '0.65rem',
+        color: 'var(--text-muted)', marginTop: 8
+      }}>
+        {t.waterUnit ? `${t.waterUnit} 250ml` : '매 잔 250ml'}
+      </p>
       {cups >= WATER_GOAL && (
-        <p className="text-center text-xs text-blue-500 mt-2 font-medium animate-fade-in-up">
-          {t.waterGoalReached.replace('{goal}', WATER_GOAL).replace('{ml}', goalMl)}
+        <p className="animate-fade-in-up" style={{
+          textAlign: 'center', fontSize: '0.75rem',
+          color: 'var(--accent-blue)', marginTop: 6, fontWeight: 600
+        }}>
+          {t.waterGoalReached?.replace('{goal}', WATER_GOAL).replace('{ml}', goalMl) || '목표 달성! 🎉'}
         </p>
       )}
     </div>
