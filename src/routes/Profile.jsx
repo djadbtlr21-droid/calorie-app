@@ -11,7 +11,7 @@ import { useLang } from '../contexts/LanguageContext';
 export default function Profile() {
   const { profile, updateProfile, resetProfile } = useProfile();
   const { log, setWeight } = useDailyLog();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [editing, setEditing] = useState(false);
   const [showReset, setShowReset] = useState(false);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains('dark'));
@@ -84,14 +84,14 @@ export default function Profile() {
           </div>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm">
-          <h3 className="font-bold text-slate-700 dark:text-slate-200 mb-3">📊 칼로리 계산 결과</h3>
+          <h3 className="font-bold text-slate-700 dark:text-slate-200 mb-3">📊 {lang === 'zh' ? '卡路里计算结果' : '칼로리 계산 결과'}</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-slate-500 dark:text-slate-400">기초 대사량 (BMR)</span>
+              <span className="text-slate-500 dark:text-slate-400">{lang === 'zh' ? '基础代谢量 (BMR)' : '기초 대사량 (BMR)'}</span>
               <span className="font-bold text-slate-700 dark:text-slate-200">{bmr} kcal</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 dark:text-slate-400">활동 대사량 (TDEE)</span>
+              <span className="text-slate-500 dark:text-slate-400">{lang === 'zh' ? '活动代谢量 (TDEE)' : '활동 대사량 (TDEE)'}</span>
               <span className="font-bold text-slate-700 dark:text-slate-200">{tdee} kcal</span>
             </div>
           </div>
@@ -99,24 +99,24 @@ export default function Profile() {
             <button onClick={() => handleGoalChange('diet')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'diet' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
               <div className="text-lg">🔥</div>
               <div className="font-bold">{tdee - 500}</div>
-              <div>체중 감소</div>
+              <div>{lang === 'zh' ? '减重' : '체중 감소'}</div>
             </button>
             <button onClick={() => handleGoalChange('maintain')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'maintain' ? 'bg-green-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
               <div className="text-lg">⚖️</div>
               <div className="font-bold">{tdee}</div>
-              <div>체중 유지</div>
+              <div>{lang === 'zh' ? '维持' : '체중 유지'}</div>
             </button>
             <button onClick={() => handleGoalChange('bulk')} className={`p-3 rounded-lg text-center text-xs transition-colors ${goal === 'bulk' ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
               <div className="text-lg">💪</div>
               <div className="font-bold">{tdee + 300}</div>
-              <div>벌크업</div>
+              <div>{lang === 'zh' ? '增肌' : '벌크업'}</div>
             </button>
           </div>
-          <p className="text-xs text-slate-400 mt-2 text-center">선택한 목표에 따라 일일 칼로리 목표가 자동으로 변경됩니다</p>
+          <p className="text-xs text-slate-400 mt-2 text-center">{t.goalCalorieInfo}</p>
         </div>
         {goalToast && (
           <div className="fixed top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-medium z-50 animate-fade-in-up">
-            목표가 변경되었습니다! ✅
+            {lang === 'zh' ? '目标已更改！✅' : '목표가 변경되었습니다! ✅'}
           </div>
         )}
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm">

@@ -10,16 +10,16 @@ import { useDailyLog } from '../hooks/useDailyLog';
 import { useLang } from '../contexts/LanguageContext';
 
 const GOAL_INFO = {
-  diet:     { icon: '🔥', label: '체중 감소 모드', color: '#FF3B30', bg: '#FFF0EF' },
-  maintain: { icon: '⚖️', label: '체중 유지 모드', color: '#007AFF', bg: '#EFF6FF' },
-  bulk:     { icon: '💪', label: '벌크업 모드',    color: '#34C759', bg: '#F0FFF4' },
+  diet:     { icon: '🔥', ko: '체중 감소 모드', zh: '减重模式', color: '#FF3B30', bg: '#FFF0EF' },
+  maintain: { icon: '⚖️', ko: '체중 유지 모드', zh: '维持模式', color: '#007AFF', bg: '#EFF6FF' },
+  bulk:     { icon: '💪', ko: '벌크업 모드',    zh: '增肌模式', color: '#34C759', bg: '#F0FFF4' },
 };
 
 export default function Home() {
   const { profile } = useProfile();
   const { log, setWater, removeMeal, totalCaloriesConsumed, totalCaloriesBurned } = useDailyLog();
   const navigate = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   const dailyGoal = profile?.dailyCalorieGoal || 2000;
   const remaining = dailyGoal - totalCaloriesConsumed + totalCaloriesBurned;
@@ -70,7 +70,7 @@ export default function Home() {
           gap: 6
         }}>
           <span style={{ fontSize: '0.95rem' }}>{goalMeta.icon}</span>
-          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: goalMeta.color }}>{goalMeta.label}</span>
+          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: goalMeta.color }}>{lang === 'zh' ? goalMeta.zh : goalMeta.ko}</span>
           <span style={{ fontSize: '0.75rem', color: goalMeta.color, opacity: 0.7 }}>· {dailyGoal}kcal</span>
         </div>
       </div>
@@ -116,8 +116,8 @@ export default function Home() {
             textAlign: 'center', width: '100%'
           }}>
             {consumed >= dailyGoal
-              ? '⚠️ 오늘 목표 칼로리를 초과했습니다'
-              : `✅ 목표까지 ${dailyGoal - consumed}kcal 남았습니다`}
+              ? `⚠️ ${t.goalExceeded || '오늘 목표 칼로리를 초과했습니다'}`
+              : `✅ ${(t.goalRemaining || '목표까지 {n}kcal 남았습니다').replace('{n}', dailyGoal - consumed)}`}
           </div>
         )}
       </div>
