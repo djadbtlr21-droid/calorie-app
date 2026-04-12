@@ -26,41 +26,45 @@ export default function Exercise() {
 
   return (
     <PageContainer>
-      <div className="space-y-4 animate-page-enter">
+      <div className="space-y-4 anim-enter">
         <PageHeader title={`${t.exerciseRecordTitle} 🏃`} />
 
-        {/* Today's burn header */}
         {totalCaloriesBurned > 0 && (
-          <div className="ap-stat-card green" style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '16px 20px', borderRadius: 'var(--radius-md)'
+          <div className="glass-card" style={{
+            display: 'flex', alignItems: 'center', gap: 14,
+            padding: '18px 20px',
+            borderLeft: '3px solid var(--green)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 12,
-                background: 'var(--accent-green)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
+            <div style={{
+              width: 44, height: 44, borderRadius: 14,
+              background: 'linear-gradient(135deg, var(--green), #2DB86A)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 0 20px var(--green-glow)'
+            }}>
+              <Activity size={22} color="white" />
+            </div>
+            <div>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t.totalBurned}</span>
+              <div className="display-num" style={{
+                fontSize: '1.8rem', color: 'var(--green)',
+                textShadow: '0 0 16px var(--green-glow)'
               }}>
-                <Activity size={20} color="white" />
-              </div>
-              <div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>{t.totalBurned}</span>
-                <div className="ap-big-number" style={{ fontSize: '1.6rem', color: 'var(--accent-green)' }}>
-                  -{totalCaloriesBurned}<span style={{ fontSize: '0.8rem', fontWeight: 500 }}>kcal</span>
-                </div>
+                -{totalCaloriesBurned}<span style={{ fontSize: '0.75rem', fontWeight: 500 }}>kcal</span>
               </div>
             </div>
           </div>
         )}
 
         {justAdded && (
-          <div className="flex items-end gap-3 animate-fade-in-up">
-            <Trainer expression="happy" size={48} />
-            <div className="ap-card" style={{ flex: 1, padding: 14, borderRadius: 'var(--radius-md) var(--radius-md) var(--radius-md) 4px' }}>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-                {t.exerciseDone.replace('{name}', justAdded.name).replace('{duration}', justAdded.duration).replace('{cal}', justAdded.caloriesBurned)}
-              </p>
-            </div>
+          <div className="glass-card animate-fade-in-up" style={{
+            padding: '12px 16px',
+            borderLeft: '3px solid var(--green)',
+            display: 'flex', alignItems: 'center', gap: 10
+          }}>
+            <span style={{ fontSize: '1.2rem' }}>💪</span>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', flex: 1 }}>
+              {t.exerciseDone.replace('{name}', justAdded.name).replace('{duration}', justAdded.duration).replace('{cal}', justAdded.caloriesBurned)}
+            </p>
           </div>
         )}
 

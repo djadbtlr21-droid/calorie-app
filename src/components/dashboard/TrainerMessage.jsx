@@ -1,4 +1,3 @@
-import Trainer from '../characters/Trainer';
 import { getHour } from '../../utils/dates';
 import { useLang } from '../../contexts/LanguageContext';
 
@@ -27,14 +26,25 @@ export default function TrainerMessage({ consumed = 0, goal = 2000, burned = 0, 
   const msg = progressMsg || timeMsg;
 
   return (
-    <div className="flex items-end gap-3">
-      <Trainer expression={msg.expression} size={56} />
-      <div className="flex-1 bg-white dark:bg-slate-800 rounded-2xl rounded-bl-sm p-3 shadow-sm border border-slate-100 dark:border-slate-700">
-        <p className="text-sm text-slate-700 dark:text-slate-200">
-          {name && <span className="font-bold text-primary">{name} {t.memberHon}</span>}
-          {msg.text}
-        </p>
-      </div>
+    <div className="glass-card" style={{
+      padding: '14px 18px',
+      borderLeft: '3px solid var(--purple)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      marginBottom: 16
+    }}>
+      <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>💬</span>
+      <p style={{
+        margin: 0,
+        fontSize: '0.85rem',
+        color: 'var(--text-secondary)',
+        lineHeight: 1.5,
+        flex: 1
+      }}>
+        {name && <span style={{ fontWeight: 700, color: 'var(--purple)' }}>{name} {t.memberHon} </span>}
+        {msg.text}
+      </p>
     </div>
   );
 }

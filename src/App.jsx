@@ -12,9 +12,9 @@ import Profile from './routes/Profile';
 
 function MainLayout() {
   return (
-    <div className="flex flex-col h-dvh" style={{ background: 'var(--bg-primary)' }}>
+    <div className="flex flex-col h-dvh">
       <main className="flex-1 overflow-y-auto" style={{ paddingBottom: 80 }}>
-        <div className="max-w-[430px] mx-auto animate-page-enter">
+        <div className="max-w-[430px] mx-auto">
           <Outlet />
         </div>
       </main>

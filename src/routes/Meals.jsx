@@ -36,20 +36,19 @@ export default function Meals() {
 
   return (
     <PageContainer>
-      <div className="space-y-4 animate-page-enter">
+      <div className="space-y-4 anim-enter">
         <PageHeader title={`${t.mealRecordTitle} 🍽️`} />
 
-        {/* Tab switcher */}
-        <div className="ap-tabs">
+        <div className="glass-tabs">
           <button
             onClick={() => { setMode('photo'); setSelectedFood(null); setSelectedFoodIndex(null); }}
-            className={`ap-tab ${mode === 'photo' ? 'active' : ''}`}
+            className={`glass-tab ${mode === 'photo' ? 'active' : ''}`}
           >
             <Camera size={16} />{t.photoRecognition}
           </button>
           <button
             onClick={() => { setMode('manual'); setSelectedFood(null); setSelectedFoodIndex(null); }}
-            className={`ap-tab ${mode === 'manual' ? 'active' : ''}`}
+            className={`glass-tab ${mode === 'manual' ? 'active' : ''}`}
           >
             <Edit3 size={16} />{t.manualInput}
           </button>
@@ -64,29 +63,35 @@ export default function Meals() {
 
             {geminiResult?.foods?.length >= 1 && (
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Trainer expression="happy" size={32} />
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t.multiFoodFound}</p>
+                <div className="glass-card" style={{
+                  padding: '12px 16px',
+                  borderLeft: `3px solid ${geminiResult.dietScore >= 7 ? 'var(--green)' : geminiResult.dietScore >= 4 ? 'var(--orange)' : 'var(--color-danger)'}`,
+                  display: 'flex', alignItems: 'center', gap: 10
+                }}>
+                  <span style={{ fontSize: '1.2rem' }}>💬</span>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', flex: 1 }}>
+                    {geminiResult.dietComment || t.multiFoodFound}
+                  </p>
                 </div>
                 {geminiResult.foods.map((food, i) => (
                   <button
                     key={i}
                     onClick={() => { setSelectedFood(food); setSelectedFoodIndex(i); }}
-                    className="ap-food-card"
+                    className="food-card-glass"
                     style={{ width: '100%', cursor: 'pointer', textAlign: 'left' }}
                   >
                     <div style={{
-                      width: 40, height: 40, borderRadius: 10,
-                      background: 'var(--accent-purple-light)',
+                      width: 40, height: 40, borderRadius: 12,
+                      background: 'rgba(155,109,255,0.15)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: '1.1rem', flexShrink: 0
                     }}>🍽️</div>
                     <div style={{ flex: 1 }}>
-                      <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{food.name}</span>
+                      <span style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-primary)' }}>{food.name}</span>
                     </div>
-                    <span className="ap-pill" style={{
-                      background: 'var(--accent-purple-light)',
-                      color: 'var(--accent-purple)'
+                    <span className="glow-pill" style={{
+                      background: 'linear-gradient(135deg, var(--purple), #7B4FE0)',
+                      color: 'white'
                     }}>
                       {food.calories}kcal
                     </span>
@@ -100,9 +105,9 @@ export default function Meals() {
                 onClick={() => { setSelectedFood({ name: '', calories: '', protein: '', carbs: '', fat: '' }); setSelectedFoodIndex(null); }}
                 style={{
                   width: '100%', padding: 14,
-                  border: '2px dashed var(--border)',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'transparent',
+                  border: '2px dashed rgba(155,109,255,0.3)',
+                  borderRadius: 'var(--r-md)',
+                  background: 'radial-gradient(ellipse at center, rgba(155,109,255,0.06), transparent)',
                   fontSize: '0.85rem',
                   color: 'var(--text-muted)',
                   cursor: 'pointer',

@@ -1,8 +1,8 @@
 import { useLang } from '../../contexts/LanguageContext';
 
-export default function CalorieRing({ consumed, goal, burned, size = 220 }) {
+export default function CalorieRing({ consumed, goal, burned, size = 240 }) {
   const { t } = useLang();
-  const strokeWidth = 18;
+  const strokeWidth = 16;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const netGoal = goal + burned;
@@ -14,22 +14,39 @@ export default function CalorieRing({ consumed, goal, burned, size = 220 }) {
   return (
     <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        <defs>
+          <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#C084FC" />
+            <stop offset="100%" stopColor="#7C3AED" />
+          </linearGradient>
+          <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FF9F67" />
+            <stop offset="100%" stopColor="#FF4B2B" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
         <circle
           cx={size / 2} cy={size / 2} r={radius}
           fill="none"
-          stroke="var(--accent-purple-light)"
+          stroke="rgba(155,109,255,0.12)"
           strokeWidth={strokeWidth}
-          className="dark:opacity-30"
         />
         <circle
           cx={size / 2} cy={size / 2} r={radius}
           fill="none"
-          stroke={isOver ? 'var(--accent-orange)' : 'var(--accent-purple)'}
+          stroke={isOver ? 'url(#orangeGradient)' : 'url(#purpleGradient)'}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1)' }}
+          filter="url(#glow)"
+          style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)' }}
         />
       </svg>
       <div style={{
@@ -38,15 +55,16 @@ export default function CalorieRing({ consumed, goal, burned, size = 220 }) {
         alignItems: 'center', justifyContent: 'center'
       }}>
         <span style={{
-          fontSize: '0.7rem', fontWeight: 600,
-          letterSpacing: '0.08em', textTransform: 'uppercase',
+          fontSize: '0.65rem', fontWeight: 600,
+          letterSpacing: '0.1em', textTransform: 'uppercase',
           color: 'var(--text-muted)'
         }}>
           {t.consumed}
         </span>
-        <span className="ap-big-number" style={{
-          fontSize: '2.8rem',
-          color: 'var(--text-primary)'
+        <span className="display-num" style={{
+          fontSize: '3rem',
+          color: 'var(--text-primary)',
+          lineHeight: 1.1
         }}>
           {consumed.toLocaleString()}
         </span>

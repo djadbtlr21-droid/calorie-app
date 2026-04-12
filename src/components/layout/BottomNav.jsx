@@ -16,7 +16,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="ap-bottom-nav safe-area-bottom">
+    <nav className="bottom-nav-glass safe-area-bottom">
       <div className="max-w-[430px] mx-auto flex h-full items-center">
         {tabs.map(({ path, label, icon: Icon }) => {
           const active = location.pathname === path;
@@ -24,19 +24,24 @@ export default function BottomNav() {
             <button
               key={path}
               onClick={() => navigate(path)}
-              className="flex-1 flex flex-col items-center justify-center gap-0.5 py-1"
               style={{
-                color: active ? 'var(--accent-purple)' : 'var(--text-muted)',
-                transition: 'color 0.2s ease',
-                border: 'none',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 2,
                 background: 'none',
+                border: 'none',
                 cursor: 'pointer',
+                color: active ? 'var(--purple)' : 'var(--text-muted)',
+                transition: 'color 0.2s, transform 0.15s',
                 minHeight: 44
               }}
             >
               <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
-              <span style={{ fontSize: '0.65rem', fontWeight: active ? 700 : 500 }}>{label}</span>
-              {active && <div className="ap-nav-dot" />}
+              <span style={{ fontSize: '0.62rem', fontWeight: active ? 700 : 400 }}>{label}</span>
+              {active && <div className="nav-glow-dot" />}
             </button>
           );
         })}

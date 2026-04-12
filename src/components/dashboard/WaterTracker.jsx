@@ -14,29 +14,25 @@ export default function WaterTracker({ cups, onSetCups }) {
   };
 
   return (
-    <div className="ap-card" style={{ padding: 16 }}>
-      <div className="ap-section-header" style={{ marginBottom: 8 }}>
+    <div className="glass-card" style={{ padding: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 10,
-            background: 'var(--accent-blue-light)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            <Droplets size={16} color="var(--accent-blue)" />
-          </div>
+          <Droplets size={18} color="var(--blue)" />
           <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{t.water}</span>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <span className="ap-big-number" style={{ fontSize: '1.2rem', color: 'var(--accent-blue)' }}>
+          <span className="display-num" style={{ fontSize: '1.2rem', color: 'var(--blue)' }}>
             {cups}/{WATER_GOAL}
           </span>
-          <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginLeft: 4 }}>
-            ({totalMl}ml)
-          </span>
+          <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginLeft: 4 }}>({totalMl}ml)</span>
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 8
+      }}>
         {Array.from({ length: WATER_GOAL }).map((_, i) => {
           const filled = i < cups;
           return (
@@ -44,36 +40,39 @@ export default function WaterTracker({ cups, onSetCups }) {
               key={i}
               onClick={() => handleTap(i)}
               style={{
-                flex: 1,
-                aspectRatio: '1',
-                borderRadius: 10,
-                border: filled ? 'none' : '2px solid var(--accent-blue-light)',
-                background: filled ? 'var(--accent-blue)' : 'transparent',
-                color: filled ? 'white' : 'var(--accent-blue-light)',
+                width: 52,
+                height: 52,
+                borderRadius: '50%',
+                border: filled ? 'none' : '2px solid rgba(79,195,247,0.25)',
+                background: filled ? 'var(--blue)' : 'transparent',
+                color: filled ? 'white' : 'rgba(79,195,247,0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.25s ease',
-                transform: filled ? 'scale(1.05)' : 'scale(1)',
+                transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+                boxShadow: filled ? '0 0 16px var(--blue-glow)' : 'none',
+                margin: '0 auto',
                 minHeight: 44
               }}
             >
-              <Droplets size={14} />
+              <Droplets size={18} />
             </button>
           );
         })}
       </div>
+
       <p style={{
-        textAlign: 'center', fontSize: '0.65rem',
-        color: 'var(--text-muted)', marginTop: 8
+        textAlign: 'center', fontSize: '0.6rem',
+        color: 'var(--text-muted)', marginTop: 10
       }}>
         {t.waterUnit ? `${t.waterUnit} 250ml` : '매 잔 250ml'}
       </p>
       {cups >= WATER_GOAL && (
         <p className="animate-fade-in-up" style={{
           textAlign: 'center', fontSize: '0.75rem',
-          color: 'var(--accent-blue)', marginTop: 6, fontWeight: 600
+          color: 'var(--blue)', marginTop: 6, fontWeight: 600,
+          textShadow: '0 0 12px var(--blue-glow)'
         }}>
           {t.waterGoalReached?.replace('{goal}', WATER_GOAL).replace('{ml}', goalMl) || '목표 달성! 🎉'}
         </p>

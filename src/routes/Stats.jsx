@@ -8,7 +8,6 @@ import { useProfile } from '../hooks/useProfile';
 import { useAchievements } from '../hooks/useAchievements';
 import { calculateBMI, getBMICategory } from '../services/nutrition';
 import { useLang } from '../contexts/LanguageContext';
-import Trainer from '../components/characters/Trainer';
 
 export default function Stats() {
   const { profile } = useProfile();
@@ -17,29 +16,32 @@ export default function Stats() {
   const bmi = profile ? calculateBMI(profile.weight, profile.height) : 0;
   const bmiCat = getBMICategory(bmi);
 
-  const bmiColor = bmi < 18.5 ? 'var(--accent-blue)' : bmi < 25 ? 'var(--accent-green)' : 'var(--accent-orange)';
+  const bmiColor = bmi < 18.5 ? 'var(--blue)' : bmi < 25 ? 'var(--green)' : 'var(--orange)';
 
   return (
     <PageContainer>
-      <div className="space-y-4 animate-page-enter">
+      <div className="space-y-4 anim-enter">
         <PageHeader title={`${t.statsTitle} 📊`} />
 
-        <div className="flex items-end gap-3">
-          <Trainer expression={stats.streakDays >= 7 ? 'happy' : 'encouraging'} size={48} />
-          <div className="ap-card" style={{ flex: 1, padding: 14, borderRadius: 'var(--radius-md) var(--radius-md) var(--radius-md) 4px' }}>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-              {stats.streakDays >= 7 ? t.streakRecording.replace('{days}', stats.streakDays) : stats.streakDays > 0 ? t.streakGoing.replace('{days}', stats.streakDays) : t.streakStart}
-            </p>
-          </div>
+        {/* Trainer banner */}
+        <div className="glass-card" style={{
+          padding: '12px 16px',
+          borderLeft: '3px solid var(--purple)',
+          display: 'flex', alignItems: 'center', gap: 10
+        }}>
+          <span style={{ fontSize: '1.2rem' }}>🏆</span>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', flex: 1 }}>
+            {stats.streakDays >= 7 ? t.streakRecording.replace('{days}', stats.streakDays) : stats.streakDays > 0 ? t.streakGoing.replace('{days}', stats.streakDays) : t.streakStart}
+          </p>
         </div>
 
         {/* Stats grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           <StreakCounter days={stats.streakDays} />
-          <div className="ap-card" style={{ padding: 16 }}>
-            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: 4 }}>{t.currentBMI}</p>
-            <p className="ap-big-number" style={{ fontSize: '1.8rem', color: 'var(--text-primary)' }}>{bmi}</p>
-            <span className="ap-pill" style={{
+          <div className="glass-card" style={{ padding: 16 }}>
+            <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t.currentBMI}</p>
+            <p className="display-num" style={{ fontSize: '2rem', color: 'var(--text-primary)' }}>{bmi}</p>
+            <span className="glow-pill" style={{
               background: `${bmiColor}20`,
               color: bmiColor,
               marginTop: 4
@@ -49,20 +51,11 @@ export default function Stats() {
           </div>
         </div>
 
-        {/* Summary stats */}
+        {/* Summary */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-          <div className="ap-stat-card purple" style={{ textAlign: 'center', padding: 14 }}>
-            <p className="ap-big-number" style={{ fontSize: '1.3rem', color: 'var(--accent-purple)' }}>{stats.totalMeals}</p>
-            <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 2 }}>{t.totalMealRecords}</p>
-          </div>
-          <div className="ap-stat-card green" style={{ textAlign: 'center', padding: 14 }}>
-            <p className="ap-big-number" style={{ fontSize: '1.3rem', color: 'var(--accent-green)' }}>{stats.totalExercises}</p>
-            <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 2 }}>{t.totalExerciseRecords}</p>
-          </div>
-          <div className="ap-stat-card blue" style={{ textAlign: 'center', padding: 14 }}>
-            <p className="ap-big-number" style={{ fontSize: '1.3rem', color: 'var(--accent-blue)' }}>{stats.waterGoalDays}</p>
-            <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 2 }}>{t.waterGoalAchieved}</p>
-          </div>
+          <GlassStat value={stats.totalMeals} label={t.totalMealRecords} color="var(--purple)" glow="var(--purple-glow)" />
+          <GlassStat value={stats.totalExercises} label={t.totalExerciseRecords} color="var(--green)" glow="var(--green-glow)" />
+          <GlassStat value={stats.waterGoalDays} label={t.waterGoalAchieved} color="var(--blue)" glow="var(--blue-glow)" />
         </div>
 
         <WeightChart goalWeight={profile?.goalWeight} />
@@ -70,5 +63,20 @@ export default function Stats() {
         <Achievements achievements={achievements} />
       </div>
     </PageContainer>
+  );
+}
+
+function GlassStat({ value, label, color, glow }) {
+  return (
+    <div className="glass-card" style={{
+      textAlign: 'center', padding: 14,
+      borderTop: `3px solid ${color}`
+    }}>
+      <p className="display-num" style={{
+        fontSize: '1.4rem', color,
+        textShadow: `0 0 12px ${glow}`
+      }}>{value}</p>
+      <p style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 4 }}>{label}</p>
+    </div>
   );
 }
