@@ -15,7 +15,12 @@ export default function FoodSearch({ onSelect }) {
   const getFoodName = (f) => lang === 'zh' ? (f.nameZh || f.name) : f.name;
   const getFoodCategory = (f) => lang === 'zh' ? (f.categoryZh || f.category) : f.category;
 
-  const filtered = FOODS.filter((f) => {
+  // When zh: only show foods that have nameZh (Chinese foods first, then any with nameZh)
+  const baseFoods = lang === 'zh'
+    ? FOODS.filter(f => f.nameZh || f.categoryZh)
+    : FOODS;
+
+  const filtered = baseFoods.filter((f) => {
     const name = getFoodName(f);
     const matchQ = !query || name.toLowerCase().includes(query.toLowerCase()) || f.name.toLowerCase().includes(query.toLowerCase());
     const matchC = !selectedCategory || getFoodCategory(f) === selectedCategory;
