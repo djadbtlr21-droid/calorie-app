@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
-import { EXERCISES, EXERCISE_CATEGORIES } from '../../data/exercises';
+import { EXERCISES, EXERCISE_CATEGORIES, EXERCISE_CATEGORIES_ZH } from '../../data/exercises';
 import { useLang } from '../../contexts/LanguageContext';
 
 export default function ExerciseSearch({ onSelect }) {
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const { t } = useLang();
-  const categories = [null, ...EXERCISE_CATEGORIES];
+  const { t, lang } = useLang();
+
+  const catList = lang === 'zh' ? EXERCISE_CATEGORIES_ZH : EXERCISE_CATEGORIES;
+  const categories = [null, ...catList];
+
+  const getExName = (e) => lang === 'zh' ? (e.nameZh || e.name) : e.name;
+  const getExCat = (e) => lang === 'zh' ? (e.categoryZh || e.category) : e.category;
+
   const filtered = EXERCISES.filter((e) => {
-    const matchQ = !query || e.name.includes(query);
-    const matchC = !selectedCategory || e.category === selectedCategory;
+    const name = getExName(e);
+    const matchQ = !query || name.includes(query) || e.name.includes(query);
+    const matchC = !selectedCategory || getExCat(e) === selectedCategory;
     return matchQ && matchC;
   });
 
@@ -31,9 +38,12 @@ export default function ExerciseSearch({ onSelect }) {
       </div>
       <div className="space-y-1.5 max-h-64 overflow-y-auto">
         {filtered.map((exercise) => (
-          <button key={exercise.id} onClick={() => onSelect(exercise)}
+          <button key={exercise.id} onClick={() => onSelect({ ...exercise, name: getExName(exercise) })}
             className="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-colors text-left">
-            <div><p className="text-sm font-medium text-slate-700 dark:text-slate-200">{exercise.name}</p><p className="text-xs text-slate-400">{exercise.category}</p></div>
+            <div>
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{getExName(exercise)}</p>
+              <p className="text-xs text-slate-400">{getExCat(exercise)}</p>
+            </div>
             <div className="text-xs text-slate-400">MET {exercise.met}</div>
           </button>
         ))}

@@ -1,18 +1,24 @@
 import { useState } from 'react';
 import { Search, Leaf } from 'lucide-react';
-import { FOODS, FOOD_CATEGORIES } from '../../data/foods';
+import { FOODS, FOOD_CATEGORIES, FOOD_CATEGORIES_ZH } from '../../data/foods';
 import { useLang } from '../../contexts/LanguageContext';
 
 export default function FoodSearch({ onSelect }) {
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dietOnly, setDietOnly] = useState(false);
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
-  const categories = [null, ...FOOD_CATEGORIES];
+  const catList = lang === 'zh' ? FOOD_CATEGORIES_ZH : FOOD_CATEGORIES;
+  const categories = [null, ...catList];
+
+  const getFoodName = (f) => lang === 'zh' ? (f.nameZh || f.name) : f.name;
+  const getFoodCategory = (f) => lang === 'zh' ? (f.categoryZh || f.category) : f.category;
+
   const filtered = FOODS.filter((f) => {
-    const matchQ = !query || f.name.toLowerCase().includes(query.toLowerCase());
-    const matchC = !selectedCategory || f.category === selectedCategory;
+    const name = getFoodName(f);
+    const matchQ = !query || name.toLowerCase().includes(query.toLowerCase()) || f.name.toLowerCase().includes(query.toLowerCase());
+    const matchC = !selectedCategory || getFoodCategory(f) === selectedCategory;
     const matchD = !dietOnly || f.diet;
     return matchQ && matchC && matchD;
   });
@@ -40,11 +46,11 @@ export default function FoodSearch({ onSelect }) {
       </div>
       <div className="space-y-1.5 max-h-64 overflow-y-auto">
         {filtered.map((food) => (
-          <button key={food.id} onClick={() => onSelect(food)}
+          <button key={food.id} onClick={() => onSelect({ ...food, name: getFoodName(food) })}
             className="w-full flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-colors text-left">
             <div>
               <div className="flex items-center gap-1.5">
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{food.name}</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{getFoodName(food)}</p>
                 {food.diet && <Leaf size={10} className="text-green-500" />}
               </div>
               <p className="text-xs text-slate-400">{food.serving}</p>
