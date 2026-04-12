@@ -117,6 +117,14 @@ export const T = {
     // Days of week
     sun: '일', mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토',
     memberHon: '회원님, ',
+    macros: '영양소',
+    goalUntil: '목표까지',
+    goalExceeded: '오늘 목표 칼로리를 초과했습니다',
+    goalRemaining: '목표까지 {n}kcal 남았습니다',
+    dietMode: '체중 감소 모드',
+    maintainMode: '체중 유지 모드',
+    bulkMode: '벌크업 모드',
+    goalCalorieInfo: '선택한 목표에 따라 일일 칼로리 목표가 자동으로 변경됩니다',
   },
   zh: {
     appName: '该减肥了?',
@@ -228,5 +236,13 @@ export const T = {
     streak7: '坚持一周以上了！💪',
     sun: '日', mon: '一', tue: '二', wed: '三', thu: '四', fri: '五', sat: '六',
     memberHon: '会员，',
+    macros: '营养素',
+    goalUntil: '距目标还剩',
+    goalExceeded: '已超出今日目标',
+    goalRemaining: '距目标还剩 {n}kcal',
+    dietMode: '减重模式',
+    maintainMode: '维持模式',
+    bulkMode: '增肌模式',
+    goalCalorieInfo: '根据选择的目标，每日卡路里目标自动变更',
   },
 };

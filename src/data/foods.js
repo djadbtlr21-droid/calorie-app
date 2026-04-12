@@ -1,5 +1,7 @@
 export const FOOD_CATEGORIES = ['밥류', '면류', '국/찌개', '고기/생선', '반찬', '빵/간식', '음료', '과일', '패스트푸드', '단백질/다이어트', '샐러드/채소', '다이어트 간식', '다이어트 세트'];
 
+export const FOOD_CATEGORIES_ZH = ['全部', '主食', '面食', '肉类', '蔬菜', '汤类', '早餐', '饮料', '小吃', '水果', '蛋白质'];
+
 export const FOODS = [
   // 밥류
   { id: 'rice', name: '공기밥', category: '밥류', calories: 300, protein: 5, carbs: 65, fat: 1, serving: '1공기 (210g)' },
@@ -132,8 +134,44 @@ export const FOODS = [
   { id: 'dark_chocolate', name: '다크초콜릿', category: '다이어트 간식', calories: 60, protein: 1, carbs: 7, fat: 4, serving: '1조각 (10g)' },
 
   // ===== 중국 음식 =====
-  { id: 'white_rice_cn', name: '白米饭/흰쌀밥', category: '밥류', calories: 300, protein: 6, carbs: 65, fat: 1, serving: '1공기' },
-  { id: 'veggie_stirfry', name: '青菜炒/채소볶음', category: '반찬', calories: 80, protein: 3, carbs: 10, fat: 3, serving: '1인분', diet: true },
+  { id: 'cn_rice', name: '공기밥', nameZh: '米饭(一碗)', category: '밥류', categoryZh: '主食', calories: 232, protein: 4.3, carbs: 51, fat: 0.5, serving: '210g' },
+  { id: 'cn_congee', name: '흰죽', nameZh: '白粥(一碗)', category: '밥류', categoryZh: '主食', calories: 116, protein: 2, carbs: 25, fat: 0.3, serving: '300g' },
+  { id: 'cn_jiaozi', name: '만두', nameZh: '饺子(10个)', category: '밥류', categoryZh: '主食', calories: 340, protein: 14, carbs: 50, fat: 9, serving: '200g' },
+  { id: 'cn_baozi', name: '찐빵', nameZh: '包子(一个)', category: '밥류', categoryZh: '主食', calories: 226, protein: 8, carbs: 38, fat: 5, serving: '100g' },
+  { id: 'cn_friedrice', name: '볶음밥', nameZh: '炒饭(一份)', category: '밥류', categoryZh: '主食', calories: 400, protein: 10, carbs: 65, fat: 12, serving: '250g' },
+  { id: 'cn_noodles', name: '국수', nameZh: '面条(一碗)', category: '면류', categoryZh: '面食', calories: 280, protein: 9, carbs: 56, fat: 2, serving: '200g' },
+  { id: 'cn_ramen', name: '라면', nameZh: '拉面(一碗)', category: '면류', categoryZh: '面食', calories: 480, protein: 18, carbs: 72, fat: 14, serving: '300g' },
+  { id: 'cn_chaomian', name: '볶음면', nameZh: '炒面(一份)', category: '면류', categoryZh: '面食', calories: 420, protein: 12, carbs: 68, fat: 14, serving: '250g' },
+  { id: 'cn_daoxiao', name: '중국식 칼국수', nameZh: '刀削面(一碗)', category: '면류', categoryZh: '面食', calories: 400, protein: 13, carbs: 75, fat: 6, serving: '300g' },
+  { id: 'cn_chongqing', name: '충칭소면', nameZh: '重庆小面(一碗)', category: '면류', categoryZh: '面食', calories: 450, protein: 15, carbs: 70, fat: 12, serving: '300g' },
+  { id: 'cn_chicken', name: '닭가슴살', nameZh: '鸡胸肉(100g)', category: '고기/생선', categoryZh: '肉类', calories: 133, protein: 25, carbs: 0, fat: 3, serving: '100g', diet: true },
+  { id: 'cn_pork', name: '삼겹살', nameZh: '猪五花(100g)', category: '고기/생선', categoryZh: '肉类', calories: 395, protein: 14, carbs: 0, fat: 37, serving: '100g' },
+  { id: 'cn_beef', name: '소고기', nameZh: '牛肉(100g)', category: '고기/생선', categoryZh: '肉类', calories: 250, protein: 26, carbs: 0, fat: 15, serving: '100g' },
+  { id: 'cn_hongshao', name: '홍소육', nameZh: '红烧肉(一份)', category: '고기/생선', categoryZh: '肉类', calories: 480, protein: 18, carbs: 20, fat: 35, serving: '200g' },
+  { id: 'cn_huiguo', name: '회과육', nameZh: '回锅肉(一份)', category: '고기/생선', categoryZh: '肉类', calories: 450, protein: 20, carbs: 10, fat: 35, serving: '200g' },
+  { id: 'cn_gongbao', name: '궁보계정', nameZh: '宫保鸡丁(一份)', category: '고기/생선', categoryZh: '肉类', calories: 380, protein: 22, carbs: 18, fat: 22, serving: '200g' },
+  { id: 'cn_yuxiang', name: '위향육사', nameZh: '鱼香肉丝(一份)', category: '고기/생선', categoryZh: '肉类', calories: 350, protein: 20, carbs: 20, fat: 18, serving: '200g' },
+  { id: 'cn_mapo', name: '마파두부', nameZh: '麻婆豆腐(一份)', category: '반찬', categoryZh: '蔬菜', calories: 220, protein: 12, carbs: 12, fat: 12, serving: '200g' },
+  { id: 'cn_tangcu', name: '탕수육', nameZh: '糖醋里脊(一份)', category: '고기/생선', categoryZh: '肉类', calories: 420, protein: 18, carbs: 45, fat: 18, serving: '200g' },
+  { id: 'cn_qingcai', name: '청채볶음', nameZh: '炒青菜(一份)', category: '반찬', categoryZh: '蔬菜', calories: 80, protein: 3, carbs: 8, fat: 4, serving: '150g', diet: true },
+  { id: 'cn_tomato_egg', name: '토마토달걀볶음', nameZh: '西红柿炒蛋(一份)', category: '반찬', categoryZh: '蔬菜', calories: 180, protein: 9, carbs: 10, fat: 10, serving: '200g' },
+  { id: 'cn_cucumber', name: '오이냉채', nameZh: '凉拌黄瓜(一份)', category: '반찬', categoryZh: '蔬菜', calories: 50, protein: 2, carbs: 8, fat: 1, serving: '150g', diet: true },
+  { id: 'cn_disanxian', name: '지삼선', nameZh: '地三鲜(一份)', category: '반찬', categoryZh: '蔬菜', calories: 280, protein: 5, carbs: 30, fat: 15, serving: '200g' },
+  { id: 'cn_tomato_soup', name: '토마토달걀국', nameZh: '番茄蛋花汤(一碗)', category: '국/찌개', categoryZh: '汤类', calories: 100, protein: 6, carbs: 8, fat: 4, serving: '300ml' },
+  { id: 'cn_rib_soup', name: '배골탕', nameZh: '排骨汤(一碗)', category: '국/찌개', categoryZh: '汤类', calories: 250, protein: 18, carbs: 5, fat: 15, serving: '300ml' },
+  { id: 'cn_egg', name: '달걀', nameZh: '鸡蛋(一个)', category: '단백질/다이어트', categoryZh: '早餐', calories: 78, protein: 6, carbs: 0.6, fat: 5, serving: '1개', diet: true },
+  { id: 'cn_soymilk', name: '두유', nameZh: '豆浆(250ml)', category: '음료', categoryZh: '早餐', calories: 65, protein: 4, carbs: 6, fat: 2, serving: '250ml' },
+  { id: 'cn_youtiao', name: '유조', nameZh: '油条(一根)', category: '빵/간식', categoryZh: '早餐', calories: 350, protein: 8, carbs: 45, fat: 16, serving: '100g' },
+  { id: 'cn_milk', name: '우유', nameZh: '牛奶(250ml)', category: '음료', categoryZh: '早餐', calories: 135, protein: 7, carbs: 10, fat: 7, serving: '250ml' },
+  { id: 'cn_milktea', name: '밀크티', nameZh: '奶茶(500ml)', category: '음료', categoryZh: '饮料', calories: 350, protein: 4, carbs: 60, fat: 10, serving: '500ml' },
+  { id: 'cn_cola', name: '콜라', nameZh: '可乐(350ml)', category: '음료', categoryZh: '饮料', calories: 140, protein: 0, carbs: 38, fat: 0, serving: '350ml' },
+  { id: 'cn_beer', name: '맥주', nameZh: '啤酒(330ml)', category: '음료', categoryZh: '饮料', calories: 143, protein: 1, carbs: 13, fat: 0, serving: '330ml' },
+  { id: 'cn_jianjiao', name: '군만두', nameZh: '煎饺(6个)', category: '빵/간식', categoryZh: '小吃', calories: 350, protein: 12, carbs: 42, fat: 14, serving: '150g' },
+  { id: 'cn_chunjuan', name: '춘권', nameZh: '春卷(2个)', category: '빵/간식', categoryZh: '小吃', calories: 240, protein: 6, carbs: 28, fat: 12, serving: '100g' },
+  { id: 'cn_apple', name: '사과', nameZh: '苹果(一个)', category: '과일', categoryZh: '水果', calories: 95, protein: 0.5, carbs: 25, fat: 0.3, serving: '1개' },
+  { id: 'cn_banana', name: '바나나', nameZh: '香蕉(一根)', category: '과일', categoryZh: '水果', calories: 105, protein: 1, carbs: 27, fat: 0.3, serving: '1개' },
+  { id: 'cn_watermelon', name: '수박', nameZh: '西瓜(一片)', category: '과일', categoryZh: '水果', calories: 85, protein: 1, carbs: 21, fat: 0.2, serving: '300g' },
+  { id: 'cn_tofu', name: '두부', nameZh: '豆腐(100g)', category: '단백질/다이어트', categoryZh: '蛋白质', calories: 80, protein: 8, carbs: 2, fat: 4, serving: '100g', diet: true },
 
   // ===== 다이어트 세트 메뉴 =====
   { id: 'diet_set_a', name: '다이어트 세트 A (닭가슴살+브로콜리+현미밥)', category: '다이어트 세트', calories: 450, protein: 40, carbs: 67, fat: 6, serving: '1세트', diet: true },
