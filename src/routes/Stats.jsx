@@ -15,46 +15,52 @@ export default function Stats() {
   const { t } = useLang();
   const bmi = profile ? calculateBMI(profile.weight, profile.height) : 0;
   const bmiCat = getBMICategory(bmi);
-
   const bmiColor = bmi < 18.5 ? 'var(--blue)' : bmi < 25 ? 'var(--green)' : 'var(--orange)';
 
   return (
     <PageContainer>
-      <div className="space-y-4 enter">
+      <div className="space-y-4 fade">
         <PageHeader title={`${t.statsTitle} 📊`} />
 
-        {/* Trainer banner */}
-        <div className="card enter-1" style={{
-          padding: '12px 16px', borderLeft: '3px solid var(--purple)',
-          borderRadius: 16, display: 'flex', alignItems: 'center', gap: 10
+        {/* Streak banner */}
+        <div style={{
+          padding: '10px 14px', background: 'var(--bg-input)', borderRadius: 12,
+          display: 'flex', gap: 10, alignItems: 'center'
         }}>
-          <span style={{ fontSize: '1.2rem' }}>🏆</span>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', flex: 1, margin: 0 }}>
+          <span style={{ fontSize: '1rem' }}>🏆</span>
+          <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-2)', flex: 1 }}>
             {stats.streakDays >= 7 ? t.streakRecording.replace('{days}', stats.streakDays) : stats.streakDays > 0 ? t.streakGoing.replace('{days}', stats.streakDays) : t.streakStart}
           </p>
         </div>
 
-        {/* Stats grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           <StreakCounter days={stats.streakDays} />
-          <div className="card enter-2" style={{ padding: 16 }}>
-            <p style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>{t.currentBMI}</p>
-            <p className="font-display" style={{ fontSize: '2rem', fontWeight: 700 }}>{bmi}</p>
+          <div className="card fade" style={{ padding: 16 }}>
+            <p style={{ fontSize: '0.62rem', color: 'var(--text-3)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t.currentBMI}</p>
+            <p className="num-hero" style={{ fontSize: '2.2rem' }}>{bmi}</p>
             <span style={{
-              display: 'inline-block', padding: '3px 10px', borderRadius: 999,
+              display: 'inline-block', padding: '3px 10px', borderRadius: 100,
               fontSize: '0.68rem', fontWeight: 600,
-              background: `${bmiColor}18`, color: bmiColor, marginTop: 4
+              background: 'var(--bg-input)', color: bmiColor, marginTop: 4
             }}>
               {t[bmiCat.key] || bmiCat.label}
             </span>
           </div>
         </div>
 
-        {/* Summary */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-          <GlassStat value={stats.totalMeals} label={t.totalMealRecords} color="var(--purple)" glow="var(--purple-glow)" />
-          <GlassStat value={stats.totalExercises} label={t.totalExerciseRecords} color="var(--green)" glow="var(--green-glow)" />
-          <GlassStat value={stats.waterGoalDays} label={t.waterGoalAchieved} color="var(--blue)" glow="var(--blue-glow)" />
+          <div className="card fade" style={{ padding: 14, textAlign: 'center' }}>
+            <p className="num-hero" style={{ fontSize: '1.5rem', color: 'var(--red)' }}>{stats.totalMeals}</p>
+            <p style={{ fontSize: '0.55rem', color: 'var(--text-3)', marginTop: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t.totalMealRecords}</p>
+          </div>
+          <div className="card fade" style={{ padding: 14, textAlign: 'center' }}>
+            <p className="num-hero" style={{ fontSize: '1.5rem', color: 'var(--green)' }}>{stats.totalExercises}</p>
+            <p style={{ fontSize: '0.55rem', color: 'var(--text-3)', marginTop: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t.totalExerciseRecords}</p>
+          </div>
+          <div className="card fade" style={{ padding: 14, textAlign: 'center' }}>
+            <p className="num-hero" style={{ fontSize: '1.5rem', color: 'var(--blue)' }}>{stats.waterGoalDays}</p>
+            <p style={{ fontSize: '0.55rem', color: 'var(--text-3)', marginTop: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t.waterGoalAchieved}</p>
+          </div>
         </div>
 
         <WeightChart goalWeight={profile?.goalWeight} />
@@ -62,20 +68,5 @@ export default function Stats() {
         <Achievements achievements={achievements} />
       </div>
     </PageContainer>
-  );
-}
-
-function GlassStat({ value, label, color, glow }) {
-  return (
-    <div className="card enter-3" style={{
-      textAlign: 'center', padding: 14,
-      borderTop: `3px solid ${color}`
-    }}>
-      <p className="font-display" style={{
-        fontSize: '1.4rem', fontWeight: 700, color,
-        textShadow: `0 0 10px ${glow}`
-      }}>{value}</p>
-      <p style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 4 }}>{label}</p>
-    </div>
   );
 }

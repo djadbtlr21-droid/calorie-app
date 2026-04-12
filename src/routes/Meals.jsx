@@ -36,17 +36,19 @@ export default function Meals() {
 
   return (
     <PageContainer>
-      <div className="space-y-4 enter">
+      <div className="space-y-4 fade">
         <PageHeader title={`${t.mealRecordTitle} 🍽️`} />
 
-        <div className="glass-tabs">
+        <div className="tab-pills">
           <button onClick={() => { setMode('photo'); setSelectedFood(null); setSelectedFoodIndex(null); }}
-            className={`glass-tab ${mode === 'photo' ? 'active' : ''}`}>
-            <Camera size={16} />{t.photoRecognition}
+            className={`pill ${mode === 'photo' ? 'pill-primary' : 'pill-secondary'}`}
+            style={{ padding: '8px 18px', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>
+            <Camera size={14} />{t.photoRecognition}
           </button>
           <button onClick={() => { setMode('manual'); setSelectedFood(null); setSelectedFoodIndex(null); }}
-            className={`glass-tab ${mode === 'manual' ? 'active' : ''}`}>
-            <Edit3 size={16} />{t.manualInput}
+            className={`pill ${mode === 'manual' ? 'pill-primary' : 'pill-secondary'}`}
+            style={{ padding: '8px 18px', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>
+            <Edit3 size={14} />{t.manualInput}
           </button>
         </div>
 
@@ -58,39 +60,30 @@ export default function Meals() {
             {mode === 'manual' && <FoodSearch onSelect={(f) => { setSelectedFood(f); setSelectedFoodIndex(null); setGeminiResult(null); }} />}
 
             {geminiResult?.foods?.length >= 1 && (
-              <div className="space-y-3">
-                <div className="card enter-1" style={{
-                  padding: '12px 16px',
-                  borderLeft: `3px solid ${geminiResult.dietScore >= 7 ? 'var(--green)' : geminiResult.dietScore >= 4 ? 'var(--orange)' : 'var(--color-danger)'}`,
-                  borderRadius: 16, display: 'flex', alignItems: 'center', gap: 10
-                }}>
-                  <span style={{ fontSize: '1.2rem' }}>💬</span>
-                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', flex: 1, margin: 0 }}>
-                    {geminiResult.dietComment || t.multiFoodFound}
-                  </p>
-                </div>
+              <div className="space-y-2">
+                {geminiResult.dietComment && (
+                  <div style={{
+                    padding: '10px 14px', background: 'var(--bg-input)', borderRadius: 12,
+                    borderLeft: `3px solid ${geminiResult.dietScore >= 7 ? 'var(--green)' : geminiResult.dietScore >= 4 ? 'var(--orange)' : 'var(--red)'}`,
+                    display: 'flex', gap: 10, alignItems: 'center'
+                  }}>
+                    <span style={{ fontSize: '1rem' }}>💬</span>
+                    <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-2)', flex: 1 }}>{geminiResult.dietComment}</p>
+                  </div>
+                )}
                 {geminiResult.foods.map((food, i) => (
                   <button key={i}
                     onClick={() => { setSelectedFood(food); setSelectedFoodIndex(i); }}
                     className="card" style={{
                       width: '100%', cursor: 'pointer', textAlign: 'left',
-                      display: 'flex', alignItems: 'center', gap: 12, padding: 14, borderRadius: 16
+                      display: 'flex', alignItems: 'center', gap: 12, padding: 14
                     }}>
-                    <div style={{
-                      width: 40, height: 40, borderRadius: 12,
-                      background: 'var(--purple-soft)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '1.1rem', flexShrink: 0
-                    }}>🍽️</div>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--bg-input)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>🥗</div>
                     <div style={{ flex: 1 }}>
                       <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{food.name}</span>
                     </div>
-                    <span style={{
-                      padding: '4px 10px', borderRadius: 999, fontSize: '0.72rem', fontWeight: 700,
-                      background: 'linear-gradient(135deg, var(--purple-mid), var(--purple))', color: 'white'
-                    }}>
-                      {food.calories}kcal
-                    </span>
+                    <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>{food.calories}<span style={{ fontSize: '0.7rem', color: 'var(--text-3)' }}>kcal</span></span>
                   </button>
                 ))}
               </div>
@@ -100,18 +93,15 @@ export default function Meals() {
               <button
                 onClick={() => { setSelectedFood({ name: '', calories: '', protein: '', carbs: '', fat: '' }); setSelectedFoodIndex(null); }}
                 style={{
-                  width: '100%', padding: 16,
-                  border: '2px dashed rgba(124,58,237,0.3)',
-                  borderRadius: 22,
-                  background: 'radial-gradient(ellipse at center, rgba(124,58,237,0.05), transparent)',
-                  fontSize: '0.85rem', color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s'
+                  width: '100%', padding: 16, border: '2px dashed var(--divider)',
+                  borderRadius: 'var(--r)', background: 'var(--bg-card)',
+                  fontSize: '0.85rem', color: 'var(--text-3)', cursor: 'pointer', transition: 'all 0.15s'
                 }}>
                 {t.customEntry}
               </button>
             )}
           </>
         )}
-
         <MealLog meals={log.meals} onRemove={removeMeal} />
       </div>
     </PageContainer>

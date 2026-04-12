@@ -16,18 +16,15 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="tab-bar safe-area-bottom">
+    <nav className="bottom-nav safe-area-bottom">
       <div className="max-w-[430px] mx-auto flex h-full items-center w-full justify-around">
         {tabs.map(({ path, label, icon: Icon }) => {
           const active = location.pathname === path;
           return (
-            <button
-              key={path}
-              onClick={() => navigate(path)}
-              className={`tab-item ${active ? 'active' : ''}`}
-            >
-              <span className="tab-icon"><Icon size={22} strokeWidth={active ? 2.5 : 1.8} /></span>
-              <span className="tab-label">{label}</span>
+            <button key={path} onClick={() => navigate(path)}
+              className={`nav-item ${active ? 'active' : ''}`}>
+              <span className="nav-icon"><Icon size={22} strokeWidth={active ? 2.4 : 1.8} /></span>
+              <span className="nav-label">{label}</span>
             </button>
           );
         })}

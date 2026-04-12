@@ -9,11 +9,12 @@ import Meals from './routes/Meals';
 import Exercise from './routes/Exercise';
 import Stats from './routes/Stats';
 import Profile from './routes/Profile';
+import { checkDailyReset, archiveDayToStats, getTodayKey } from './utils/storage';
 
 function MainLayout() {
   return (
     <div className="flex flex-col h-dvh">
-      <main className="flex-1 overflow-y-auto" style={{ paddingBottom: 80 }}>
+      <main className="flex-1 overflow-y-auto" style={{ paddingBottom: 72 }}>
         <div className="max-w-[430px] mx-auto">
           <Outlet />
         </div>
@@ -49,6 +50,9 @@ export default function App() {
   useEffect(() => {
     const dark = JSON.parse(localStorage.getItem('darkMode') || 'false');
     document.documentElement.classList.toggle('dark', dark);
+
+    checkDailyReset();
+    archiveDayToStats(getTodayKey());
 
     try {
       const saved = localStorage.getItem('userProfile');
