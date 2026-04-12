@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Dumbbell, Utensils, Flame, Activity, Droplets } from 'lucide-react';
+import { Dumbbell, Utensils } from 'lucide-react';
 import CalorieRing from '../components/dashboard/CalorieRing';
 import WaterTracker from '../components/dashboard/WaterTracker';
 import MealBadges from '../components/dashboard/MealBadges';
@@ -25,51 +25,71 @@ export default function Home() {
 
   const today = new Date();
   const dateStr = today.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
+  const name = profile?.name || '';
 
   return (
-    <div className="px-5 pt-6 pb-4 anim-enter" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <div style={{ padding: '0 16px 88px', display: 'flex', flexDirection: 'column', gap: 12 }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="enter" style={{
+        display: 'flex', justifyContent: 'space-between',
+        alignItems: 'flex-start', padding: '20px 4px 4px'
+      }}>
         <div>
-          <h1 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            {t.greeting?.replace('{name}', profile?.name) || `안녕하세요, ${profile?.name}님`} 👋
+          <h1 className="font-display" style={{
+            margin: 0, fontSize: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em'
+          }}>
+            {t.greeting?.replace('{name}', name) || `안녕하세요, ${name}님`} 👋
           </h1>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 3 }}>{dateStr}</p>
+          <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: 'var(--text-muted)' }}>{dateStr}</p>
         </div>
         <div style={{
-          width: 42, height: 42, borderRadius: '50%',
-          background: 'linear-gradient(135deg, var(--purple), #7B4FE0)',
+          width: 44, height: 44, borderRadius: '50%',
+          background: 'linear-gradient(135deg, var(--purple-mid), var(--purple))',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'white', fontWeight: 800, fontSize: '1rem',
-          boxShadow: '0 0 20px var(--purple-glow)'
+          color: 'white', fontWeight: 800, fontSize: '1.1rem',
+          boxShadow: '0 0 0 3px var(--purple-soft), 0 4px 12px var(--purple-glow)',
+          flexShrink: 0
         }}>
-          {(profile?.name || '?')[0]}
+          {(name || '?')[0]}
         </div>
-      </div>
+      </header>
 
       <DailyCheckin meals={log.meals} waterCups={log.waterCups} exercises={log.exercises} waterGoal={profile?.waterGoal || 8} onNavigate={navigate} />
 
-      {/* Trainer banner — above ring */}
-      <TrainerMessage consumed={totalCaloriesConsumed} goal={goal} burned={totalCaloriesBurned} waterCups={log.waterCups} waterGoal={profile?.waterGoal || 8} name={profile?.name} />
+      {/* Trainer banner */}
+      <TrainerMessage consumed={totalCaloriesConsumed} goal={goal} burned={totalCaloriesBurned} waterCups={log.waterCups} waterGoal={profile?.waterGoal || 8} name={name} />
 
-      {/* Calorie Ring card */}
-      <div className="glass-card" style={{ padding: '32px 20px', borderRadius: 'var(--r-lg)' }}>
+      {/* Calorie Ring */}
+      <div className="card enter enter-2" style={{ padding: '28px 20px', position: 'relative', overflow: 'hidden' }}>
         <CalorieRing consumed={totalCaloriesConsumed} goal={goal} burned={totalCaloriesBurned} size={240} />
       </div>
 
-      {/* Stat pills */}
-      <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 2 }}>
-        <GlowStat icon={<Flame size={16} />} label={t.remaining} value={Math.abs(remaining)} unit="kcal"
-          color="var(--orange)" glow="var(--orange-glow)" />
-        <GlowStat icon={<Activity size={16} />} label={t.burned} value={totalCaloriesBurned} unit="kcal"
-          color="var(--green)" glow="var(--green-glow)" />
-        <GlowStat icon={<Droplets size={16} />} label={t.water} value={log.waterCups} unit={`/${profile?.waterGoal || 8}`}
-          color="var(--blue)" glow="var(--blue-glow)" />
+      {/* 3 stat chips */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
+        {[
+          { icon: '🔥', label: t.remaining, value: Math.abs(remaining), color: '--orange', glow: '--orange-glow' },
+          { icon: '⚡', label: t.burned, value: totalCaloriesBurned, color: '--green', glow: '--green-glow' },
+          { icon: '💧', label: t.water, value: `${log.waterCups}/${profile?.waterGoal || 8}`, color: '--blue', glow: '--blue-glow' },
+        ].map((chip) => (
+          <div key={chip.label} className="card enter enter-3" style={{
+            padding: '14px 10px', textAlign: 'center',
+            borderTop: `3px solid var(${chip.color})`
+          }}>
+            <span style={{ fontSize: '1.15rem' }}>{chip.icon}</span>
+            <div className="font-display" style={{
+              fontSize: '1.4rem', fontWeight: 700,
+              color: `var(${chip.color})`,
+              textShadow: `0 0 14px var(${chip.glow})`,
+              lineHeight: 1.15, marginTop: 4
+            }}>{chip.value}</div>
+            <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: 3, fontWeight: 500 }}>{chip.label}</div>
+          </div>
+        ))}
       </div>
 
       {/* Macros */}
-      <div className="glass-card" style={{ padding: '14px 18px' }}>
-        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)', display: 'block', marginBottom: 10 }}>
+      <div className="card enter enter-3" style={{ padding: '16px 18px' }}>
+        <span style={{ fontWeight: 700, fontSize: '0.9rem', display: 'block', marginBottom: 10 }}>
           {t.macros || '영양소'}
         </span>
         <div className="macro-bar" style={{ marginBottom: 10 }}>
@@ -92,24 +112,33 @@ export default function Home() {
 
       {/* Quick actions */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-        <button onClick={() => navigate('/meals')} className="btn-primary" style={{ borderRadius: 'var(--r-lg)', height: 50, fontSize: '0.85rem' }}>
+        <button onClick={() => navigate('/meals')} className="btn btn-purple enter enter-5">
           <Utensils size={18} /> {t.addMeal}
         </button>
-        <button onClick={() => navigate('/exercise')} className="btn-primary btn-green" style={{ borderRadius: 'var(--r-lg)', height: 50, fontSize: '0.85rem' }}>
+        <button onClick={() => navigate('/exercise')} className="btn btn-green enter enter-5">
           <Dumbbell size={18} /> {t.addExercise}
         </button>
       </div>
 
       {/* Today summary */}
       {(log.meals.length > 0 || log.exercises.length > 0) && (
-        <div className="glass-card" style={{ padding: 16 }}>
-          <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)', display: 'block', marginBottom: 12 }}>
+        <div className="card enter enter-6" style={{ padding: 16 }}>
+          <span style={{ fontWeight: 700, fontSize: '0.9rem', display: 'block', marginBottom: 12 }}>
             {t.todaySummary}
           </span>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, textAlign: 'center' }}>
-            <SummaryCell value={totalCaloriesConsumed} label={t.consumed} color="var(--purple)" />
-            <SummaryCell value={`-${totalCaloriesBurned}`} label={t.burned} color="var(--green)" />
-            <SummaryCell value={totalCaloriesConsumed - totalCaloriesBurned} label={t.netCalories} color="var(--text-primary)" />
+            <div>
+              <p className="font-display" style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--purple)' }}>{totalCaloriesConsumed}</p>
+              <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>{t.consumed}</p>
+            </div>
+            <div>
+              <p className="font-display" style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--green)' }}>-{totalCaloriesBurned}</p>
+              <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>{t.burned}</p>
+            </div>
+            <div>
+              <p className="font-display" style={{ fontSize: '1.3rem', fontWeight: 700 }}>{totalCaloriesConsumed - totalCaloriesBurned}</p>
+              <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>{t.netCalories}</p>
+            </div>
           </div>
         </div>
       )}
@@ -117,42 +146,14 @@ export default function Home() {
   );
 }
 
-function GlowStat({ icon, label, value, unit, color, glow }) {
-  return (
-    <div className="glass-card" style={{
-      display: 'flex', flexDirection: 'column', gap: 4,
-      minWidth: 110, flex: '0 0 auto', padding: '14px',
-      borderLeft: `3px solid ${color}`
-    }}>
-      <div style={{ color, display: 'flex', alignItems: 'center', gap: 4 }}>
-        {icon}
-        <span style={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
-        <span className="display-num" style={{ fontSize: '1.5rem', color, textShadow: `0 0 16px ${glow}` }}>{value}</span>
-        <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>{unit}</span>
-      </div>
-    </div>
-  );
-}
-
 function MacroDot({ color, label, value }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      <div style={{ width: 7, height: 7, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}60` }} />
+      <div style={{ width: 7, height: 7, borderRadius: '50%', background: color, boxShadow: `0 0 6px ${color}50` }} />
       <div>
         <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{label} </span>
-        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-primary)' }}>{value}</span>
+        <span style={{ fontSize: '0.72rem', fontWeight: 700 }}>{value}</span>
       </div>
-    </div>
-  );
-}
-
-function SummaryCell({ value, label, color }) {
-  return (
-    <div>
-      <p className="display-num" style={{ fontSize: '1.3rem', color }}>{value}</p>
-      <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>{label}</p>
     </div>
   );
 }
